@@ -4,7 +4,6 @@ import sys
 import random
 import itertools
 from pygame.locals import *
-import pyrebase
 
 numOfPixels = 240
 displayWidth = 1300
@@ -18,42 +17,11 @@ pygame.init()
 display = pygame.display.set_mode((displayWidth, displayHeight), 0, 32)
 display.fill((255, 255, 255))
 
-config = {
-    "apiKey": "AIzaSyCw2VULu88Y6GFyIhA3uX3xH0ELNyGZRX8",
-    "authDomain": "sound-visualizer-6443f.firebaseapp.com",
-    "databaseURL": "https://sound-visualizer-6443f.firebaseio.com/",
-    "storageBucket": "sound-visualizer-6443f.appspot.com"
-}
-
-
-firebase = pyrebase.initialize_app(config)
-db = firebase.database()
-print db.get().val()
-
-
-def stream_handler(message):
-    print(message["event"])  # put
-    print(message["path"])  # /-K7yGTTEp7O549EzTYtI
-    print(message["data"])  # {'title': 'Pyrebase', "body": "etc..."}
-    result = firebase.get('/', None)
-    updatePixels()
-
-my_stream = db.stream(stream_handler)
-
 try:
     ser = serial.Serial('/dev/tty.usbserial', 9600)
 except Exception as e:
     print "Serial connection error: ", e.args
     arduinoConnected = False
-
-
-def updateColorsFromServer():
-    pass
-    # result = firebase.get('/', None)
-    # for x in result:
-    #     if str(x).isdigit():
-    #         pixelRGBW[int(x)] = (result[x][u"R"], result[x][u"G"],
-    # result[x][u"B"], result[x][u"W"])
 
 
 def randomizeColors():
@@ -63,8 +31,25 @@ def randomizeColors():
         pixelRGBW[i] = randomColor
 
 
+def cycleColors():
+    for i in range(numOfPixels):
+        R = pixelRGBW[i][0] + 1
+        G = pixelRGBW[i][1] + 2
+        B = pixelRGBW[i][2] + 3
+        W = pixelRGBW[i][3] + 4
+        if R > 255:
+            R = 0
+        if G > 255:
+            G = 0
+        if B > 255:
+            B = 0
+        if W > 255:
+            W = 0
+        pixelRGBW[i] = (R, G, B, W)
+
+
 def convertRGBWtoRGB(RGBW):
-    return map(lambda x: (x[0] + x[3], x[1] + x[3], x[2] + x[3]), RGBW)
+    return map(lambda x: (x[0], x[1], x[2]), RGBW)
 
 
 def updatePixels():
@@ -87,10 +72,10 @@ def main():
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
-                my_stream.close()
                 pygame.quit()
                 sys.exit()
-        # updatePixels()
+        cycleColors()
+        updatePixels()
         sendColors()
         pygame.display.update()
 
