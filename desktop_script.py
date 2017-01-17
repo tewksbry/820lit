@@ -7,6 +7,8 @@ import pattern
 import sound_visualizer
 import pyaudio
 import numpy as np
+from sound_handler import soundHandler
+import Queue
 
 
 last_volume = 0
@@ -28,27 +30,19 @@ def main():
     # visualizer.play(delay=0)
     global last_pattern
     visualizer = Visualizer()
-    stream = sound_visualizer.p.open(format=pyaudio.paInt16,
-                                     channels=sound_visualizer.CHANNELS,
-                                     rate=sound_visualizer.RATE,
-                                     frames_per_buffer=sound_visualizer.CHUNK,
-                                     input=True,
-                                     stream_callback=sound_callback)
 
-    stream.start_stream()
+    handler = soundHandler()
 
-    while stream.is_active():
-        new_pattern = pattern.middleOutWithEndsRainbowPatternFromVolume(
-            last_volume, PIXEL_NUM, previous=last_pattern)
-        visualizer.update(new_pattern)
-        last_pattern = new_pattern
+    def new_pattern(volume, prev_pattern=last_pattern):
+        new_patt = pattern.middleOutWithEndsRainbowPatternFromVolume(
+            volume, PIXEL_NUM, previous=prev_pattern)
+        visualizer.update(new_patt)
+
         visualizer.checkClosure()
+        return volume
 
-    stream.stop_stream()
+    handler.start_stream(callback_function=new_pattern)
 
-    stream.close()
-
-    visualizer.p.terminate()
 
 
 main()
