@@ -54,7 +54,6 @@ class Pattern:
 
 
 class PatternSet:
-    9
     """docstring for PatternSet"""
 
     def __init__(self, patternSet=[Pattern()], filltype="repeat"):
