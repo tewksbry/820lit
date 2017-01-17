@@ -34,7 +34,6 @@ def main():
     stream.start_stream()
 
     while stream.is_active():
-
         visualizer.update(
             pattern.middleOutPatternFromVolume(last_volume, PIXEL_NUM))
         visualizer.checkClosure()
