@@ -4,8 +4,8 @@ import pyaudio
 import time
 import numpy as np
 import math
+
 from matplotlib import pyplot as plt
-import scipy.signal as signal
 
 
 CHANNELS = 1
@@ -19,7 +19,7 @@ curr_average = 0
 
 
 def sigmoid(x):
-    return int(240 / (1 + 8 * math.exp(-0.003 * x)))
+    return int(100 / (1 + 8 * math.exp(-0.0003 * x)))
 
 
 def callback(in_data, frame_count, time_info, flag):
