@@ -9,7 +9,7 @@ import sys
 class Visualizer:
     """docstring for Visualizer"""
 
-    def __init__(self, pixels=240, displayWidth=1300, displayHeight=100, pixelWidth=5, pixelHeight=50, patternSet=pattern.defaultPatternSet()):
+    def __init__(self, pixels=240, displayWidth=1440, displayHeight=50, pixelWidth=6, pixelHeight=50, patternSet=pattern.defaultPatternSet()):
         self.pixels = pixels
         self.displayWidth = displayWidth
         self.displayHeight = displayHeight

@@ -13,7 +13,6 @@ RATE = 8000
 CHUNK = 130
 # 60 per second
 
-
 p = pyaudio.PyAudio()
 curr_average = 0
 
