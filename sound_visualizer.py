@@ -19,7 +19,7 @@ curr_average = 0
 
 
 def sigmoid(x):
-    return int(240 / (1 + 0.5 * math.exp(-0.001 * x)))
+    return int(240 / (1 + 8 * math.exp(-0.003 * x)))
 
 
 def callback(in_data, frame_count, time_info, flag):

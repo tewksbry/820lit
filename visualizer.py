@@ -34,7 +34,6 @@ class Visualizer:
     def update(self, currPattern=None):
         if currPattern == None:
             currPattern = self.pattern.next()
-        # print currPattern
         for i in range(self.pixels):
             left = (self.displayWidth - self.pixels *
                     self.pixelWidth) / 2 + i * self.pixelWidth
