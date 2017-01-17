@@ -9,7 +9,7 @@ class LED:
         if tup is not None:
             self.R, self.G, self.B = tup
             if len(tup) == 4:
-                rainbowself.W = tup[3]
+                self.W = tup[3]
 
     def RGB(self):
         return (self.R, self.G, self.B)
@@ -21,38 +21,52 @@ class LED:
 class Pattern:
     """docstring for Pattern"""
 
-    def __init__(self, patternwidth=240, filltype="repeat", pattern=[LED()]):
-        self.patternwidth = patternwidth
+    def __init__(self, arr=[LED()]):
+        self.arr = arr
+        self.patternwidth = len(arr)
+
+    def extend(self, pattern):
+        self.arr.extend(pattern.arr)
+        self.patternwidth = len(self.arr)
+
+    def trim(self, size):
+        self.arr = self.arr[:size]
+
+
+class PatternSet:
+    """docstring for PatternSet"""
+
+    def __init__(self, patternSet=[Pattern()], filltype="repeat"):
         self.filltype = filltype
-        self.pattern = pattern
+        self.patternSet = patternSet
         self.nextIndex = 0
-        self.patternLength = len(pattern)
 
     def next(self, width=240):
-        arr = []
+        nextPattern = Pattern([LED()] * width)
         if self.filltype == "repeat":
-            for _ in range(width / self.patternwidth + 1):
-                arr.extend(self.pattern[self.nextIndex])
+            pattern = self.patternSet[self.nextIndex]
+            for _ in range(width / pattern.patternwidth + 1):
+                nextPattern.extend(pattern)
         else:
-            arr = [LED()] * width
-            arr[:self.patternLength] = self.pattern[nextIndex]
+            nextPattern.arr[:len(self.patternSet)] = self.patternSet[
+                self.nextIndex].arr
 
-        arr = arr[:width]
+        nextPattern.trim(width)
 
         self.nextIndex += 1
         if self.nextIndex == self.patternLength:
             self.nextIndex = 0
 
-        return arr
+        return nextPattern
 
 
-def defaultPattern():
-    patternArr = [[LED(i, i, i, i)] for i in range(256)]
-    patternArr.extend([[LED(i, i, i, i)] for i in range(254, -1, -1)])
-    return Pattern(patternwidth=1, pattern=patternArr)
+def defaultPatternSet():
+    patternArr = [Pattern([LED(i, i, i, i)]) for i in range(256)]
+    patternArr.extend([Pattern([LED(i, i, i, i)]) for i in range(254, -1, -1)])
+    return PatternSet(patternSet=patternArr)
 
 
-def rainbow():
+def rainbowPatternSet():
     RGB = [255, 0, 0]
     patternArr = []
     for decCol in range(3):
@@ -61,6 +75,21 @@ def rainbow():
         for _ in range(255):
             RGB[decCol] -= 1
             RGB[incCol] += 1
-            patternArr.append([LED(tup=RGB)])
-    print patternArr
-    return Pattern(patternwidth=1, pattern=patternArr)
+            patternArr.append(Pattern([LED(tup=RGB)]))
+    return PatternSet(patternwidth=1, pattern=patternArr)
+
+
+def leftPatternFromVolume(volume, width=240):
+    volumeBar = Pattern([LED()] * width)
+    for i in range(int(width * volume / 100.0)):
+        volumeBar.arr[i] = LED(R=255)
+    return volumeBar
+
+
+def middleOutPatternFromVolume(volume, width=240):
+    volumeBar = Pattern([LED()] * width)
+    middle = width / 2
+    for i in range(int(middle * volume / 100.0)):
+        volumeBar.arr[middle + i] = LED(R=255)
+        volumeBar.arr[middle - i] = LED(R=255)
+    return volumeBar

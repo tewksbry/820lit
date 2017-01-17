@@ -34,16 +34,16 @@ def main():
     stream.start_stream()
 
     while stream.is_active():
-        volumeBar = [pattern.LED()] * PIXEL_NUM
-        for i in range(last_volume):
-            volumeBar[i] = pattern.LED(R=255)
-        visualizer.update(currPattern=volumeBar)
+
+        visualizer.update(
+            pattern.middleOutPatternFromVolume(last_volume, PIXEL_NUM))
         visualizer.checkClosure()
 
     stream.stop_stream()
 
     stream.close()
 
-    p.terminate()
+    visualizer.p.terminate()
+
 
 main()
