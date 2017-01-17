@@ -1,8 +1,5 @@
-import random
-import itertools
 from visualizer import Visualizer
 from pattern import Pattern
-from pattern import PatternSet
 import pattern
 import sound_visualizer
 import pyaudio
@@ -12,6 +9,11 @@ import numpy as np
 last_volume = 0
 PIXEL_NUM = 240
 last_pattern = Pattern()
+
+
+def patternCreator():
+    # return pattern.middleOutRainbowWithFillPatternFromVolume(last_volume, PIXEL_NUM)
+    return pattern.middleOutWithEndsRainbowPatternFromVolume(last_volume, PIXEL_NUM, previous=last_pattern, fade=0.95, ending=0.7)
 
 
 def sound_callback(in_data, frame_count, time_info, flag):
@@ -38,8 +40,7 @@ def main():
     stream.start_stream()
 
     while stream.is_active():
-        new_pattern = pattern.middleOutWithEndsRainbowPatternFromVolume(
-            last_volume, PIXEL_NUM, previous=last_pattern)
+        new_pattern = patternCreator()
         visualizer.update(new_pattern)
         last_pattern = new_pattern
         visualizer.checkClosure()

@@ -115,7 +115,7 @@ def middleOutPatternFromVolume(volume, width=240):
     middle = width / 2
     for i in range(int(middle * volume / 100.0)):
         volumeBar.arr[middle + i] = LED(R=255)
-        volumeBar.arr[middle - i] = LED(R=255)
+        volumeBar.arr[middle - 1 - i] = LED(R=255)
     return volumeBar
 
 
@@ -129,8 +129,22 @@ def middleOutRainbowPatternFromVolume(volume, width=240, previous=None, fade=0.9
     for i in range(int(middle * volume / 100.0)):
         volumeBar.arr[middle + i] = raindowColors[i *
                                                   len(raindowColors) / middle]
-        volumeBar.arr[middle - i] = raindowColors[i *
+        volumeBar.arr[middle - 1 - i] = raindowColors[i *
+                                                      len(raindowColors) / middle]
+    return volumeBar
+
+
+def middleOutRainbowWithFillPatternFromVolume(volume, width=240):
+    volumeBar = Pattern([LED()] * width)
+    middle = width / 2
+    lastIndex = int(middle * volume / 100.0)
+    for i in range(lastIndex):
+        volumeBar.arr[middle + i] = raindowColors[i *
                                                   len(raindowColors) / middle]
+        volumeBar.arr[middle - i - 1] = raindowColors[i *
+                                                      len(raindowColors) / middle]
+    volumeBar.arr[:middle - lastIndex] = [raindowColors[lastIndex * len(raindowColors) / middle]] * (middle - lastIndex)
+    volumeBar.arr[middle + lastIndex:] = [raindowColors[lastIndex * len(raindowColors) / middle]] * (middle - lastIndex)
     return volumeBar
 
 
