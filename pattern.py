@@ -14,6 +14,20 @@ class LED:
     def RGB(self):
         return (self.R, self.G, self.B)
 
+    def fade(self, old):
+        mindiff = min(old.R - self.R, old.G - self.G,
+                      old.B - self.B)
+        if mindiff > 0:
+            self.R += mindiff / 2
+            self.G += mindiff / 2
+            self.B += mindiff / 2
+            self.W += mindiff / 2
+
+    def __mul__(self, other):
+        return LED(self.R * other, self.G * other, self.B * other, self.W * other)
+
+    __rmul__ = __mul__
+
     def __repr__(self):
         return "(%i, %i, %i, %i)" % (self.R, self.G, self.B, self.W)
 
@@ -21,7 +35,7 @@ class LED:
 class Pattern:
     """docstring for Pattern"""
 
-    def __init__(self, arr=[LED()]):
+    def __init__(self, arr=[LED()] * 240):
         self.arr = arr
         self.patternwidth = len(arr)
 
@@ -32,8 +46,15 @@ class Pattern:
     def trim(self, size):
         self.arr = self.arr[:size]
 
+    def fade(self, old):
+        for i in range(self.patternwidth):
+            if i == old.patternwidth:
+                break
+            self.arr[i].fade(old.arr[i])
+
 
 class PatternSet:
+    9
     """docstring for PatternSet"""
 
     def __init__(self, patternSet=[Pattern()], filltype="repeat"):
@@ -99,8 +120,12 @@ def middleOutPatternFromVolume(volume, width=240):
     return volumeBar
 
 
-def middleOutRainbowPatternFromVolume(volume, width=240):
-    volumeBar = Pattern([LED()] * width)
+def middleOutRainbowPatternFromVolume(volume, width=240, previous=None):
+    volumeBar = previous
+    if not volumeBar:
+        volumeBar = Pattern([LED()] * width)
+    else:
+        volumeBar.arr = map(lambda x: 0.98 * x, volumeBar.arr)
     middle = width / 2
     for i in range(int(middle * volume / 100.0)):
         volumeBar.arr[middle + i] = raindowColors[i *

@@ -1,13 +1,17 @@
 import random
 import itertools
 from visualizer import Visualizer
+from pattern import Pattern
+from pattern import PatternSet
 import pattern
 import sound_visualizer
 import pyaudio
 import numpy as np
 
+
 last_volume = 0
 PIXEL_NUM = 240
+last_pattern = Pattern()
 
 
 def sound_callback(in_data, frame_count, time_info, flag):
@@ -22,7 +26,7 @@ def sound_callback(in_data, frame_count, time_info, flag):
 def main():
     # visualizer = Visualizer(pattern=pattern.rainbow())
     # visualizer.play(delay=0)
-
+    global last_pattern
     visualizer = Visualizer()
     stream = sound_visualizer.p.open(format=pyaudio.paInt16,
                                      channels=sound_visualizer.CHANNELS,
@@ -34,8 +38,10 @@ def main():
     stream.start_stream()
 
     while stream.is_active():
-        visualizer.update(
-            pattern.middleOutRainbowPatternFromVolume(last_volume, PIXEL_NUM))
+        new_pattern = pattern.middleOutRainbowPatternFromVolume(
+            last_volume, PIXEL_NUM, previous=last_pattern)
+        visualizer.update(new_pattern)
+        last_pattern = new_pattern
         visualizer.checkClosure()
 
     stream.stop_stream()
