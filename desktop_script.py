@@ -38,7 +38,7 @@ def main():
     stream.start_stream()
 
     while stream.is_active():
-        new_pattern = pattern.middleOutRainbowPatternFromVolume(
+        new_pattern = pattern.middleOutWithEndsRainbowPatternFromVolume(
             last_volume, PIXEL_NUM, previous=last_pattern)
         visualizer.update(new_pattern)
         last_pattern = new_pattern

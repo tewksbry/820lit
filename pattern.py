@@ -120,16 +120,35 @@ def middleOutPatternFromVolume(volume, width=240):
     return volumeBar
 
 
-def middleOutRainbowPatternFromVolume(volume, width=240, previous=None):
+def middleOutRainbowPatternFromVolume(volume, width=240, previous=None, fade=0.9):
     volumeBar = previous
     if not volumeBar:
         volumeBar = Pattern([LED()] * width)
     else:
-        volumeBar.arr = map(lambda x: 0.98 * x, volumeBar.arr)
+        volumeBar.arr = map(lambda x: fade * x, volumeBar.arr)
     middle = width / 2
     for i in range(int(middle * volume / 100.0)):
         volumeBar.arr[middle + i] = raindowColors[i *
                                                   len(raindowColors) / middle]
         volumeBar.arr[middle - i] = raindowColors[i *
                                                   len(raindowColors) / middle]
+    return volumeBar
+
+
+def middleOutWithEndsRainbowPatternFromVolume(volume, width=240, previous=None, fade=0.9, ending=0.75):
+
+    volumeBar = previous
+    if not volumeBar:
+        volumeBar = Pattern([LED()] * width)
+    else:
+        volumeBar.arr = map(lambda x: fade * x, volumeBar.arr)
+    middle = width / 2
+    range_size = int(middle * ending)
+    for i in range(int(range_size * volume / 100.0)):
+        volumeBar.arr[middle + i] = raindowColors[i * len(raindowColors) / range_size]
+        volumeBar.arr[middle - 1 - i] = raindowColors[i * len(raindowColors) / range_size]
+        if i >= middle * (2 * ending - 1):
+            spillover = int(i - middle * (2 * ending - 1))
+            volumeBar.arr[-spillover - 1] = raindowColors[i * len(raindowColors) / range_size]
+            volumeBar.arr[spillover] = raindowColors[i * len(raindowColors) / range_size]
     return volumeBar
