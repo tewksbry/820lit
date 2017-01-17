@@ -60,6 +60,16 @@ class PatternSet:
         return nextPattern
 
 
+raindowColors = []
+RGB = [255, 0, 0]
+for decCol in range(3):
+    incCol = 0 if decCol == 2 else decCol + 1
+    for _ in range(255):
+        RGB[decCol] -= 1
+        RGB[incCol] += 1
+        raindowColors.append(LED(tup=RGB))
+
+
 def defaultPatternSet():
     patternArr = [Pattern([LED(i, i, i, i)]) for i in range(256)]
     patternArr.extend([Pattern([LED(i, i, i, i)]) for i in range(254, -1, -1)])
@@ -67,15 +77,9 @@ def defaultPatternSet():
 
 
 def rainbowPatternSet():
-    RGB = [255, 0, 0]
     patternArr = []
-    for decCol in range(3):
-        incCol = 0 if decCol == 2 else decCol + 1
-
-        for _ in range(255):
-            RGB[decCol] -= 1
-            RGB[incCol] += 1
-            patternArr.append(Pattern([LED(tup=RGB)]))
+    for color in raindowColors:
+        patternArr.append(Pattern([color]))
     return PatternSet(patternwidth=1, pattern=patternArr)
 
 
@@ -92,4 +96,15 @@ def middleOutPatternFromVolume(volume, width=240):
     for i in range(int(middle * volume / 100.0)):
         volumeBar.arr[middle + i] = LED(R=255)
         volumeBar.arr[middle - i] = LED(R=255)
+    return volumeBar
+
+
+def middleOutRainbowPatternFromVolume(volume, width=240):
+    volumeBar = Pattern([LED()] * width)
+    middle = width / 2
+    for i in range(int(middle * volume / 100.0)):
+        volumeBar.arr[middle + i] = raindowColors[i *
+                                                  len(raindowColors) / middle]
+        volumeBar.arr[middle - i] = raindowColors[i *
+                                                  len(raindowColors) / middle]
     return volumeBar

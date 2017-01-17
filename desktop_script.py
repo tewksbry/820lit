@@ -35,7 +35,7 @@ def main():
 
     while stream.is_active():
         visualizer.update(
-            pattern.middleOutPatternFromVolume(last_volume, PIXEL_NUM))
+            pattern.middleOutRainbowPatternFromVolume(last_volume, PIXEL_NUM))
         visualizer.checkClosure()
 
     stream.stop_stream()
