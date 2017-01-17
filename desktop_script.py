@@ -34,6 +34,7 @@ def main():
     handler = soundHandler()
 
     def new_pattern(volume, prev_pattern=last_pattern):
+
         new_patt = pattern.middleOutWithEndsRainbowPatternFromVolume(
             volume, PIXEL_NUM, previous=prev_pattern)
         visualizer.update(new_patt)

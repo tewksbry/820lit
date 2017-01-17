@@ -31,7 +31,7 @@ class soundHandler(object):
         self.__RATE = rate
         self.__CHUNK = chunk
         self.__max_output = 100
-        self.__dependency = -0.0003
+        self.__dependency = -0.0009
         self.__scale_factor = 8
         self.stream = None
         self.__input_format = pyaudio.paInt16
@@ -100,13 +100,12 @@ class soundHandler(object):
         self.stream.start_stream()
 
         while self.stream.is_active():
-            self.getBlockingFunction()
-
+            self.__getBlockingFunction()
 
         self.stream.close()
 
 
-    def getBlockingFunction(self):
+    def __getBlockingFunction(self):
         callback = self.queue.get()
         self.__handle_volume_data(callback)
 
