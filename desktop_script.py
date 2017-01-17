@@ -12,7 +12,7 @@ next_pattern = Pattern()
 
 
 def patternCreator(volume=0):
-    # return pattern.middleOutRainbowWithFillPatternFromVolume(last_volume, PIXEL_NUM)
+    # return pattern.middleOutRainbowWithFillPatternFromVolume(volume, PIXEL_NUM)
     return pattern.middleOutWithEndsRainbowPatternFromVolume(volume, PIXEL_NUM, previous=next_pattern, fade=0.95, ending=0.7)
 
 
