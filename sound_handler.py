@@ -31,7 +31,7 @@ class soundHandler(object):
         self.__RATE = rate
         self.__CHUNK = chunk
         self.__max_output = 100
-        self.__dependency = -0.0009
+        self.__dependency = -0.0018
         self.__scale_factor = 8
         self.stream = None
         self.__input_format = pyaudio.paInt16
