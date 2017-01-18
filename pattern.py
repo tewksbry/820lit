@@ -81,6 +81,9 @@ class PatternSet:
 
 
 raindowColors = []
+grayScale = [LED(i, i, i, i) for i in range(255, -1, -1)]
+
+
 RGB = [255, 0, 0]
 for decCol in range(3):
     incCol = 0 if decCol == 2 else decCol + 1
@@ -103,65 +106,23 @@ def rainbowPatternSet():
     return PatternSet(patternwidth=1, pattern=patternArr)
 
 
-def leftPatternFromVolume(volume, width=240):
-    volumeBar = Pattern([LED()] * width)
-    for i in range(int(width * volume / 100.0)):
-        volumeBar.arr[i] = LED(R=255)
-    return volumeBar
-
-
-def middleOutPatternFromVolume(volume, width=240):
-    volumeBar = Pattern([LED()] * width)
-    middle = width / 2
-    for i in range(int(middle * volume / 100.0)):
-        volumeBar.arr[middle + i] = LED(R=255)
-        volumeBar.arr[middle - 1 - i] = LED(R=255)
-    return volumeBar
-
-
-def middleOutRainbowPatternFromVolume(volume, width=240, previous=None, fade=0.9):
-    volumeBar = previous
-    if not volumeBar:
-        volumeBar = Pattern([LED()] * width)
+def middleOut(volume, width=240, previous=None, fade=0, cutoff=1, colorPattern=raindowColors, fill=False):
+    pattern = previous
+    if not pattern:
+        pattern = Pattern([LED()] * width)
     else:
-        volumeBar.arr = map(lambda x: fade * x, volumeBar.arr)
+        pattern.arr = map(lambda x: fade * x, pattern.arr)
     middle = width / 2
-    for i in range(int(middle * volume / 100.0)):
-        volumeBar.arr[middle + i] = raindowColors[i *
-                                                  len(raindowColors) / middle]
-        volumeBar.arr[middle - 1 - i] = raindowColors[i *
-                                                      len(raindowColors) / middle]
-    return volumeBar
-
-
-def middleOutRainbowWithFillPatternFromVolume(volume, width=240):
-    volumeBar = Pattern([LED()] * width)
-    middle = width / 2
-    lastIndex = int(middle * volume / 100.0)
+    range_size = int(middle * cutoff)
+    lastIndex = int(range_size * volume / 100.0)
     for i in range(lastIndex):
-        volumeBar.arr[middle + i] = raindowColors[i *
-                                                  len(raindowColors) / middle]
-        volumeBar.arr[middle - i - 1] = raindowColors[i *
-                                                      len(raindowColors) / middle]
-    volumeBar.arr[:middle - lastIndex] = [raindowColors[lastIndex * len(raindowColors) / middle]] * (middle - lastIndex)
-    volumeBar.arr[middle + lastIndex:] = [raindowColors[lastIndex * len(raindowColors) / middle]] * (middle - lastIndex)
-    return volumeBar
-
-
-def middleOutWithEndsRainbowPatternFromVolume(volume, width=240, previous=None, fade=0.9, ending=0.75):
-
-    volumeBar = previous
-    if not volumeBar:
-        volumeBar = Pattern([LED()] * width)
-    else:
-        volumeBar.arr = map(lambda x: fade * x, volumeBar.arr)
-    middle = width / 2
-    range_size = int(middle * ending)
-    for i in range(int(range_size * volume / 100.0)):
-        volumeBar.arr[middle + i] = raindowColors[i * len(raindowColors) / range_size]
-        volumeBar.arr[middle - 1 - i] = raindowColors[i * len(raindowColors) / range_size]
-        if i >= middle * (2 * ending - 1):
-            spillover = int(i - middle * (2 * ending - 1))
-            volumeBar.arr[-spillover - 1] = raindowColors[i * len(raindowColors) / range_size]
-            volumeBar.arr[spillover] = raindowColors[i * len(raindowColors) / range_size]
-    return volumeBar
+        pattern.arr[middle + i] = colorPattern[i * len(colorPattern) / range_size]
+        pattern.arr[middle - 1 - i] = colorPattern[i * len(colorPattern) / range_size]
+        if i >= middle * (2 * cutoff - 1):
+            spillover = int(i - middle * (2 * cutoff - 1))
+            pattern.arr[-spillover - 1] = colorPattern[i * len(colorPattern) / range_size]
+            pattern.arr[spillover] = colorPattern[i * len(colorPattern) / range_size]
+    if fill and cutoff == 1:
+        pattern.arr[:middle - lastIndex] = [raindowColors[lastIndex * len(raindowColors) / range_size - 1]] * (range_size - lastIndex)
+        pattern.arr[middle + lastIndex:] = [raindowColors[lastIndex * len(raindowColors) / range_size - 1]] * (range_size - lastIndex)
+    return pattern

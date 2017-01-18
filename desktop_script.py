@@ -12,8 +12,7 @@ next_pattern = Pattern()
 
 
 def patternCreator(volume=0):
-    # return pattern.middleOutRainbowWithFillPatternFromVolume(volume, PIXEL_NUM)
-    return pattern.middleOutWithEndsRainbowPatternFromVolume(volume, PIXEL_NUM, previous=next_pattern, fade=0.95, ending=0.7)
+    return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=0.7, fill=False, colorPattern=pattern.raindowColors)
 
 
 def sound_callback(in_data, frame_count, time_info, flag):
