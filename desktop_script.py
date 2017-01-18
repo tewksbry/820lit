@@ -9,10 +9,11 @@ from sound_handler import soundHandler
 
 PIXEL_NUM = 240
 next_pattern = Pattern()
+last_volume = 0
 
 
 def patternCreator(volume=0):
-    return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=0.7, fill=False, colorPattern=pattern.raindowColors)
+    return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=0.75, fill=False, colorPattern=pattern.rotatedRainbow, lastVolume=last_volume)
 
 
 def sound_callback(in_data, frame_count, time_info, flag):
@@ -33,8 +34,9 @@ def main():
     handler = soundHandler()
 
     def new_pattern(volume):
-
+        global last_volume
         next_pattern = patternCreator(volume=volume)
+        last_volume = volume
         visualizer.update(next_pattern)
 
         visualizer.checkClosure()

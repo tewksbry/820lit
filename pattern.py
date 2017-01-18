@@ -92,6 +92,12 @@ for decCol in range(3):
         RGB[incCol] += 1
         raindowColors.append(LED(tup=RGB))
 
+rotatedRainbow = list(raindowColors)
+
+
+def rotate(l, n):
+    return l[-n:] + l[:-n]
+
 
 def defaultPatternSet():
     patternArr = [Pattern([LED(i, i, i, i)]) for i in range(256)]
@@ -106,15 +112,22 @@ def rainbowPatternSet():
     return PatternSet(patternwidth=1, pattern=patternArr)
 
 
-def middleOut(volume, width=240, previous=None, fade=0, cutoff=1, colorPattern=raindowColors, fill=False):
+def middleOut(volume, width=240, previous=None, fade=0, cutoff=1, colorPattern=raindowColors, fill=False, lastVolume=None):
     pattern = previous
     if not pattern:
         pattern = Pattern([LED()] * width)
     else:
         pattern.arr = map(lambda x: fade * x, pattern.arr)
     middle = width / 2
+
     range_size = int(middle * cutoff)
     lastIndex = int(range_size * volume / 100.0)
+
+    if lastVolume and volume > lastVolume:
+        volumeChange = volume - lastVolume
+        global rotatedRainbow
+        rotatedRainbow = rotate(rotatedRainbow, int(len(rotatedRainbow) * (volumeChange**1.1) / (100**1.1 * 3)))
+
     for i in range(lastIndex):
         pattern.arr[middle + i] = colorPattern[i * len(colorPattern) / range_size]
         pattern.arr[middle - 1 - i] = colorPattern[i * len(colorPattern) / range_size]
@@ -123,6 +136,6 @@ def middleOut(volume, width=240, previous=None, fade=0, cutoff=1, colorPattern=r
             pattern.arr[-spillover - 1] = colorPattern[i * len(colorPattern) / range_size]
             pattern.arr[spillover] = colorPattern[i * len(colorPattern) / range_size]
     if fill and cutoff == 1:
-        pattern.arr[:middle - lastIndex] = [raindowColors[lastIndex * len(raindowColors) / range_size - 1]] * (range_size - lastIndex)
-        pattern.arr[middle + lastIndex:] = [raindowColors[lastIndex * len(raindowColors) / range_size - 1]] * (range_size - lastIndex)
+        pattern.arr[:middle - lastIndex] = [colorPattern[lastIndex * len(colorPattern) / range_size - 1]] * (range_size - lastIndex)
+        pattern.arr[middle + lastIndex:] = [colorPattern[lastIndex * len(colorPattern) / range_size - 1]] * (range_size - lastIndex)
     return pattern
