@@ -1,3 +1,5 @@
+import random
+
 class LED:
     """docstring for LED"""
 
@@ -109,6 +111,15 @@ def leftPatternFromVolume(volume, width=240):
         volumeBar.arr[i] = LED(R=255)
     return volumeBar
 
+def sparkle(width=240):
+    noVolumeBar = Pattern([LED()] * width)
+    for i in range(10):
+        ChosenOne = random.randint(0,239)
+        noVolumeBar.arr[ChosenOne] = LED(R=255, G=59)
+    for i in range(10):
+        ChosenOne = random.randint(0, 239)
+        noVolumeBar.arr[ChosenOne] = LED(R=255, G=208)
+    return noVolumeBar
 
 def middleOutPatternFromVolume(volume, width=240):
     volumeBar = Pattern([LED()] * width)

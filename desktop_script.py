@@ -5,7 +5,7 @@ import sound_visualizer
 import pyaudio
 import numpy as np
 from sound_handler import soundHandler
-
+import time
 
 PIXEL_NUM = 240
 next_pattern = Pattern()
@@ -13,7 +13,7 @@ next_pattern = Pattern()
 
 def patternCreator(volume=0):
     # return pattern.middleOutRainbowWithFillPatternFromVolume(volume, PIXEL_NUM)
-    return pattern.middleOutWithEndsRainbowPatternFromVolume(volume, PIXEL_NUM, previous=next_pattern, fade=0.95, ending=0.7)
+    return pattern.sparkle(volume, PIXEL_NUM, previous=next_pattern, fade=0.95, ending=0.7)
 
 
 def sound_callback(in_data, frame_count, time_info, flag):
@@ -30,7 +30,11 @@ def main():
     # visualizer.play(delay=0)
 
     visualizer = Visualizer()
+    while True:
+        visualizer.update(pattern.sparkle())
 
+        visualizer.checkClosure()
+        time.sleep(0.1)
     handler = soundHandler()
 
     def new_pattern(volume):
