@@ -38,8 +38,8 @@ class soundHandler(object):
         self.stream = None
         self.__currPattern = 0
         self.__isActive = False
-
-        self.queue = Queue.Queue()
+        self.data_tuple = [0,0,0]
+        #self.queue = Queue.Queue()
 
 
     def close_stream(self):
@@ -59,7 +59,7 @@ class soundHandler(object):
         self.__currPattern = int(response.raw_body)
 
     def __frequencySigmoid(self,freq):
-        return round(100 / (1 + 10 * math.exp(-.0003 * freq)))
+        return round(100 / (1 + 10 * math.exp(-0.0003 * freq)))
 
     def update_sigmoid_params(self, max_value=100, input_dependency=-0.0003, scale_factor=8):
         """Can update the values of the sigmoid function, if needed"""
@@ -88,13 +88,11 @@ class soundHandler(object):
         # Do the calculations
         frequency = np.fft.fft(audio_data)
 
-        
-
         frequency = abs(frequency)
         frequency = np.average(frequency)
         frequency = self.__frequencySigmoid(frequency)
-
-        self.queue.put((last_volume,frequency,self.__currPattern))
+        self.data_tuple = [last_volume,frequency,self.__currPattern]
+        #self.queue.put((last_volume,frequency,self.__currPattern))
 
         if self.__isActive:
             return (audio_data, pyaudio.paContinue)
@@ -117,14 +115,14 @@ class soundHandler(object):
         self.stream.start_stream()
 
         while self.stream.is_active():
-            self.__getBlockingFunction()
+            self.__handle_volume_data(self.data_tuple[0],self.data_tuple[1],self.data_tuple[2])
 
         self.stream.close()
 
-    def __getBlockingFunction(self):
+    """def __getBlockingFunction(self):
         tupleData = self.queue.get()
         self.__handle_volume_data(tupleData[0],tupleData[1],tupleData[2])
-
+"""
 
 # ----- just for testing purposes ----- #
 

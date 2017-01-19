@@ -64,7 +64,8 @@ def main():
 
     def new_pattern(volume, frequency, pattern):
         global last_volume
-        next_pattern = patternCreator(volume=volume, frequency=frequency, patternNum=pattern)
+
+        next_pattern = patternCreator(volume=volume, frequency=frequency)
         last_volume = volume
         visualizer.update(next_pattern)
         visualizer.checkClosure()
