@@ -1,11 +1,12 @@
 # Author: Samuel Resendez
 
 import pyaudio
-import time
+
 import numpy as np
 import math
 import Queue
-from matplotlib import pyplot as plt
+
+
 
 
 """
@@ -35,13 +36,9 @@ class soundHandler(object):
         self.stream = None
         self.__input_format = pyaudio.paInt16
         self.__isActive = False
-        self.__handle_volume_data
+
         self.queue = Queue.Queue()
 
-    def __handle_volume_data(self, volume=0):  # Should be overridden
-        """Internal volume data callback function"""
-        print(volume)
-        return volume
 
     def close_stream(self):
         if self.__isActive:
@@ -50,9 +47,13 @@ class soundHandler(object):
             pass
 
     def __sigmoid(self, x):
-        """Math function which maps values to set scale"""
+        """Math function which maps values to set volume scale"""
 
         return round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
+
+
+    def __frequencySigmoid(self,freq):
+        return round(100 / (1 + 10 * math.exp(-.0003 * freq)))
 
     def update_sigmoid_params(self, max_value=100, input_dependency=-0.0003, scale_factor=8):
         """Can update the values of the sigmoid function, if needed"""
@@ -66,21 +67,33 @@ class soundHandler(object):
     def __callback(self, in_data, frame_count, time_info, flag):
         """Private function used to interface with pyAudio"""
         audio_data = np.fromstring(in_data, dtype=np.int16)
+
+
         # do processing here
         last_volume = self.__sigmoid(max(audio_data))
-        self.queue.put(last_volume)
+
+        # Do the calculations
+        frequency = np.fft.fft(audio_data)
+
+        
+
+        frequency = abs(frequency)
+        frequency = np.average(frequency)
+        frequency = self.__frequencySigmoid(frequency)
+
+        self.queue.put((last_volume,frequency))
 
         if self.__isActive:
             return (audio_data, pyaudio.paContinue)
         else:
             return (audio_data, pyaudio.paAbort)
 
-    def start_stream(self, callback_function=None):
+    def start_stream(self, callback_function):
         """Starts stream, and reads volumes values into the callback function for processing
         Callback takes one argument, which is the numeric volume data as an Integer"""
         self.__isActive = True
-        if callback_function is not None:
-            self.__handle_volume_data = callback_function
+
+        self.__handle_volume_data = callback_function
 
         self.stream = pyaudio.PyAudio().open(format=self.__input_format,
                                              channels=self.__CHANNELS,
@@ -96,8 +109,8 @@ class soundHandler(object):
         self.stream.close()
 
     def __getBlockingFunction(self):
-        callback = self.queue.get()
-        self.__handle_volume_data(callback)
+        tupleData = self.queue.get()
+        self.__handle_volume_data(tupleData[0],tupleData[1])
 
 
 # ----- just for testing purposes ----- #
@@ -106,13 +119,12 @@ def main():
 
     handler = soundHandler()
 
-    def callback(volume):
+    def callback(volume,frequency):
         print("This is the volume: " + str(volume))
-
+        print("This is the frequency: " + str(frequency))
         return volume
 
     handler.start_stream(callback_function=callback)
-    print("Do we get here")
 
 
 if __name__ == "__main__":
