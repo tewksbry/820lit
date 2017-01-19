@@ -1,27 +1,30 @@
 class LED:
     """docstring for LED"""
 
-    def __init__(self, R=0, G=0, B=0, W=0, tup=None):
+    def __init__(self, R=0, G=0, B=0, W=0, tup=None, brightness=1):
         self.R = R
         self.G = G
         self.B = B
         self.W = W
+        self.brightness = brightness
         if tup is not None:
             self.R, self.G, self.B = tup
             if len(tup) == 4:
                 self.W = tup[3]
 
     def RGB(self):
-        return (self.R, self.G, self.B)
+        return map(int, (self.R * self.brightness, self.G * self.brightness, self.B * self.brightness))
 
-    def fade(self, old):
-        mindiff = min(old.R - self.R, old.G - self.G,
-                      old.B - self.B)
-        if mindiff > 0:
-            self.R += mindiff / 2
-            self.G += mindiff / 2
-            self.B += mindiff / 2
-            self.W += mindiff / 2
+    def RGBW(self):
+        return map(int, (self.R * self.brightness, self.G * self.brightness, self.B * self.brightness, self.W * self.brightness))
+
+    def setColor(self, RGB):
+        if isinstance(RGB, LED):
+            self.R, self.G, self.B, self.W = RGB.R, RGB.G, RGB.B, RGB.W
+        else:
+            self.R, self.G, self.B = RGB
+            if len(RGB) == 4:
+                self.W = RGB[3]
 
     def __mul__(self, other):
         return LED(self.R * other, self.G * other, self.B * other, self.W * other)
@@ -29,7 +32,7 @@ class LED:
     __rmul__ = __mul__
 
     def __repr__(self):
-        return "(%i, %i, %i, %i)" % (self.R, self.G, self.B, self.W)
+        return "(%i, %i, %i, %i)*%f" % (self.R, self.G, self.B, self.W, self.brightness)
 
 
 class Pattern:
@@ -46,11 +49,43 @@ class Pattern:
     def trim(self, size):
         self.arr = self.arr[:size]
 
-    def fade(self, old):
-        for i in range(self.patternwidth):
-            if i == old.patternwidth:
-                break
-            self.arr[i].fade(old.arr[i])
+    def setBrightness(self, brightness=1):
+        for LED in self.arr:
+            LED.brightness = brightness
+
+    def fade(self, fade):
+        for LED in self.arr:
+            LED.brightness *= fade
+
+    def fillWithPalette(self, palette, start=0, end=-1, dir=None):
+        if start >= end:
+            return
+        if end == -1:
+            end = self.patternwidth
+        size = (end - start)
+        if start < 0:
+            start = 0
+        if end > self.patternwidth:
+            end = self.patternwidth
+        stretch_factor = float(len(palette)) / size
+
+        if start != 0 and dir != "right":
+            self.fillWithPalette(palette[::-1], start - size, start, dir="left")
+        if end != self.patternwidth and dir != "left":
+            self.fillWithPalette(palette[::-1], end, end + size, dir="right")
+
+        if start == 0:
+            for i in range(start, end):
+                self.arr[end - i - 1].setColor(palette[int((end - i - 1) * stretch_factor)])
+        else:
+            for i in range(start, end):
+                self.arr[i].setColor(palette[int((i - start) * stretch_factor)])
+
+    def fillWithColor(self, color, start=0, end=-1):
+        if end == -1:
+            end = self.patternwidth
+        for i in range(start, end):
+            self.arr[i].setColor(color)
 
 
 class PatternSet:
@@ -95,6 +130,13 @@ for decCol in range(3):
 rotatedRainbow = list(raindowColors)
 
 
+def rotateRainbow(volume, last_volume):
+    if last_volume and volume > last_volume:
+        volumeChange = volume - last_volume
+        global rotatedRainbow
+        rotatedRainbow = rotate(rotatedRainbow, int(len(rotatedRainbow) * (volumeChange**1.1) / (100**1.1 * 3)))
+
+
 def rotate(l, n):
     return l[-n:] + l[:-n]
 
@@ -112,30 +154,35 @@ def rainbowPatternSet():
     return PatternSet(patternwidth=1, pattern=patternArr)
 
 
-def middleOut(volume, width=240, previous=None, fade=0, cutoff=1, colorPattern=raindowColors, fill=False, lastVolume=None):
+def middleOut(volume, width=240, previous=None, fade=0, cutoff=1, color_palette=raindowColors, fill=False, last_volume=None):
     pattern = previous
+
     if not pattern:
-        pattern = Pattern([LED()] * width)
+        pattern = Pattern([LED() for _ in range(width)])
+
+    elif fill:
+        pattern.setBrightness(1)
     else:
-        pattern.arr = map(lambda x: fade * x, pattern.arr)
+        pattern.fade(fade)
+
     middle = width / 2
 
     range_size = int(middle * cutoff)
-    lastIndex = int(range_size * volume / 100.0)
+    active_range = int(range_size * volume / 100.0)
 
-    if lastVolume and volume > lastVolume:
-        volumeChange = volume - lastVolume
-        global rotatedRainbow
-        rotatedRainbow = rotate(rotatedRainbow, int(len(rotatedRainbow) * (volumeChange**1.1) / (100**1.1 * 3)))
+    rotateRainbow(volume, last_volume)
 
-    for i in range(lastIndex):
-        pattern.arr[middle + i] = colorPattern[i * len(colorPattern) / range_size]
-        pattern.arr[middle - 1 - i] = colorPattern[i * len(colorPattern) / range_size]
+    pattern.fillWithPalette(color_palette, middle, middle + range_size)
+
+    for i in range(active_range):
+        pattern.arr[middle + i].brightness = 1
+        pattern.arr[middle - 1 - i].brightness = 1
+
         if i >= middle * (2 * cutoff - 1):
             spillover = int(i - middle * (2 * cutoff - 1))
-            pattern.arr[-spillover - 1] = colorPattern[i * len(colorPattern) / range_size]
-            pattern.arr[spillover] = colorPattern[i * len(colorPattern) / range_size]
+            pattern.arr[-spillover - 1].brightness = 1
+            pattern.arr[spillover].brightness = 1
     if fill and cutoff == 1:
-        pattern.arr[:middle - lastIndex] = [colorPattern[lastIndex * len(colorPattern) / range_size - 1]] * (range_size - lastIndex)
-        pattern.arr[middle + lastIndex:] = [colorPattern[lastIndex * len(colorPattern) / range_size - 1]] * (range_size - lastIndex)
+        pattern.fillWithColor(color_palette[active_range * len(color_palette) / range_size - 1], end=middle - active_range)
+        pattern.fillWithColor(color_palette[active_range * len(color_palette) / range_size - 1], start=middle + active_range)
     return pattern
