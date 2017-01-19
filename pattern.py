@@ -1,5 +1,6 @@
 import random
 
+
 class LED:
     """docstring for LED"""
 
@@ -78,7 +79,7 @@ class Pattern:
 
         if start == 0:
             for i in range(start, end):
-                self.arr[end - i - 1].setColor(palette[int((end - i - 1) * stretch_factor)])
+                self.arr[end - i - 1].setColor(palette[-int((start - i) * stretch_factor)])
         else:
             for i in range(start, end):
                 self.arr[i].setColor(palette[int((i - start) * stretch_factor)])
@@ -140,7 +141,7 @@ def rotateRainbow(volume, last_volume):
 
 
 def rotate(l, n):
-    return l[-n:] + l[:-n]
+    return l[-n:] + l[: -n]
 
 
 def defaultPatternSet():
@@ -155,15 +156,17 @@ def rainbowPatternSet():
         patternArr.append(Pattern([color]))
     return PatternSet(patternwidth=1, pattern=patternArr)
 
+
 def sparkle(width=240):
     noVolumeBar = Pattern([LED()] * width)
     for i in range(10):
-        ChosenOne = random.randint(0,239)
+        ChosenOne = random.randint(0, 239)
         noVolumeBar.arr[ChosenOne] = LED(R=255, G=59)
     for i in range(10):
         ChosenOne = random.randint(0, 239)
         noVolumeBar.arr[ChosenOne] = LED(R=255, G=208)
     return noVolumeBar
+
 
 def middleOut(volume, width=240, previous=None, fade=0, cutoff=1, color_palette=raindowColors, fill=False, last_volume=None):
     pattern = previous
@@ -175,7 +178,6 @@ def middleOut(volume, width=240, previous=None, fade=0, cutoff=1, color_palette=
         pattern.setBrightness(1)
     else:
         pattern.fade(fade)
-
 
     middle = width / 2
 
