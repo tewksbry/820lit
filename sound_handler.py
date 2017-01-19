@@ -5,6 +5,8 @@ import pyaudio
 import numpy as np
 import math
 import Queue
+import unirest
+
 
 
 
@@ -34,7 +36,7 @@ class soundHandler(object):
         self.__dependency = -0.0018
         self.__scale_factor = 8
         self.stream = None
-        self.__input_format = pyaudio.paInt16
+        self.__currPattern = 0
         self.__isActive = False
 
         self.queue = Queue.Queue()
@@ -51,6 +53,10 @@ class soundHandler(object):
 
         return round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
 
+
+    def __update_curr_pattern(self,response):
+
+        self.__currPattern = int(response.raw_body)
 
     def __frequencySigmoid(self,freq):
         return round(100 / (1 + 10 * math.exp(-.0003 * freq)))
@@ -69,6 +75,13 @@ class soundHandler(object):
         audio_data = np.fromstring(in_data, dtype=np.int16)
 
 
+
+        if int(frame_count) % 2 == 0 :
+            url = "https://sound-visualizer-6443f.firebaseio.com/PatternID.json"
+            unirest.get(url,callback=self.__update_curr_pattern)
+
+
+
         # do processing here
         last_volume = self.__sigmoid(max(audio_data))
 
@@ -81,7 +94,7 @@ class soundHandler(object):
         frequency = np.average(frequency)
         frequency = self.__frequencySigmoid(frequency)
 
-        self.queue.put((last_volume,frequency))
+        self.queue.put((last_volume,frequency,self.__currPattern))
 
         if self.__isActive:
             return (audio_data, pyaudio.paContinue)
@@ -95,7 +108,7 @@ class soundHandler(object):
 
         self.__handle_volume_data = callback_function
 
-        self.stream = pyaudio.PyAudio().open(format=self.__input_format,
+        self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16,
                                              channels=self.__CHANNELS,
                                              rate=self.__RATE,
                                              frames_per_buffer=self.__CHUNK,
@@ -110,7 +123,7 @@ class soundHandler(object):
 
     def __getBlockingFunction(self):
         tupleData = self.queue.get()
-        self.__handle_volume_data(tupleData[0],tupleData[1])
+        self.__handle_volume_data(tupleData[0],tupleData[1],tupleData[2])
 
 
 # ----- just for testing purposes ----- #
@@ -119,9 +132,10 @@ def main():
 
     handler = soundHandler()
 
-    def callback(volume,frequency):
+    def callback(volume,frequency,pattern):
         print("This is the volume: " + str(volume))
         print("This is the frequency: " + str(frequency))
+        print("This is the pattern: " + str(pattern))
         return volume
 
     handler.start_stream(callback_function=callback)

@@ -33,7 +33,7 @@ def main():
 
     handler = soundHandler()
 
-    def new_pattern(volume, frequency):
+    def new_pattern(volume, frequency,patterNumber):
         global last_volume
         next_pattern = patternCreator(volume=volume)
         last_volume = volume
