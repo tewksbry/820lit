@@ -1,5 +1,6 @@
 from visualizer import Visualizer
 from pattern import Pattern
+from pattern import LED
 import pattern
 import sound_visualizer
 import pyaudio
@@ -8,12 +9,14 @@ from sound_handler import soundHandler
 import time
 
 PIXEL_NUM = 240
-next_pattern = Pattern()
+next_pattern = Pattern([LED() for _ in range(PIXEL_NUM)])
+last_volume = 0
 
 
-def patternCreator(volume=0):
-    # return pattern.middleOutRainbowWithFillPatternFromVolume(volume, PIXEL_NUM)
-    return pattern.sparkle(volume, PIXEL_NUM, previous=next_pattern, fade=0.95, ending=0.7)
+
+def patternCreator(volume=0, frequency=0):
+    return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=1, fill=False, color_palette=pattern.rotatedRainbow, last_volume=last_volume)
+
 
 
 def sound_callback(in_data, frame_count, time_info, flag):
@@ -37,11 +40,12 @@ def main():
         time.sleep(0.1)
     handler = soundHandler()
 
-    def new_pattern(volume):
-
-        next_pattern = patternCreator(volume=volume)
+    def new_pattern(volume, frequency, pattern):
+        global last_volume
+        next_pattern = patternCreator(volume=volume, frequency=frequency)
+        last_volume = volume
         visualizer.update(next_pattern)
-
+        print(frequency)
         visualizer.checkClosure()
         return volume
 
