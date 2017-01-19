@@ -79,7 +79,8 @@ class Pattern:
 
         if start == 0:
             for i in range(start, end):
-                self.arr[end - i - 1].setColor(palette[-int((start - i) * stretch_factor)])
+
+                self.arr[end - i - 1].setColor(palette[int((size - i - 1) * stretch_factor)])
         else:
             for i in range(start, end):
                 self.arr[i].setColor(palette[int((i - start) * stretch_factor)])

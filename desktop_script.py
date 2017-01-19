@@ -27,13 +27,13 @@ def patternCreator(volume=0, frequency=0, patternNum=0):
     elif patternNum == 5:
         return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=1, fill=True, color_palette=pattern.raindowColors, last_volume=last_volume)
     elif patternNum == 6:
-        return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=0.7, fill=False, color_palette=pattern.raindowColors, last_volume=last_volume)
+        return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=0.3, fill=False, color_palette=pattern.raindowColors, last_volume=last_volume)
     elif patternNum == 7:
         return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=1, fill=False, color_palette=pattern.grayScale, last_volume=last_volume)
     elif patternNum == 8:
         return pattern.middleOut(volume, previous=next_pattern, fade=0.95, cutoff=0.8, fill=False, color_palette=pattern.grayScale, last_volume=last_volume)
     elif patternNum == 9:
-        # time.sleep(0.1)
+        time.sleep(0.1)
         return pattern.sparkle()
 
     frequencyColor = pattern.raindowColors[int(len(pattern.raindowColors) * frequency / 100.0) - 1]
@@ -65,7 +65,7 @@ def main():
     def new_pattern(volume, frequency, pattern):
         global last_volume
 
-        next_pattern = patternCreator(volume=volume, frequency=frequency)
+        next_pattern = patternCreator(volume=volume, frequency=frequency, patternNum=pattern)
         last_volume = volume
         visualizer.update(next_pattern)
         visualizer.checkClosure()
