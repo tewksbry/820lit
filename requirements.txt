@@ -1,8 +1,11 @@
 argh==0.26.2
 cycler==0.10.0
+gevent==1.2.1
+greenlet==0.4.11
 matplotlib==1.5.3
 numpy==1.12.0
 pkgtools==0.7.3
+poster==0.8.1
 PyAudio==0.2.9
 pygame==1.9.3
 pyparsing==2.1.10
@@ -10,4 +13,5 @@ pyserial==3.2.1
 python-dateutil==2.6.0
 pytz==2016.10
 six==1.10.0
+Unirest==1.1.7
 wheel==0.24.0

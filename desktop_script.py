@@ -34,12 +34,12 @@ def main():
 
     handler = soundHandler()
 
-    def new_pattern(volume):
+    def new_pattern(volume, frequency, pattern):
         global last_volume
         next_pattern = patternCreator(volume=volume)
         last_volume = volume
         visualizer.update(next_pattern)
-
+        print(frequency)
         visualizer.checkClosure()
         return volume
 
