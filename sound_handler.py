@@ -77,11 +77,19 @@ class soundHandler(object):
         last_volume = self.__sigmoid(max(audio_data))
 
         # Do the calculations
-        frequency = np.fft.fft(audio_data)
+        fftData = abs(np.fft.rfft(audio_data)) ** 2
+        which = fftData[1:].argmax() + 1
 
-        frequency = abs(frequency)
-        frequency = np.average(frequency)
-        frequency = self.__frequencySigmoid(frequency)
+
+        if which != len(fftData) - 1:
+            y0, y1, y2 = np.log(fftData[which - 1:which + 2:])
+            x1 = (y2 - y0) * .5 / (2 * y1 - y2 - y0)
+            # find the frequency and output it
+            frequency = (which + x1) * self.__RATE / self.__CHUNK
+        else:
+            frequency = which * self.__RATE / self.__CHUNK
+
+
         self.data_tuple = [last_volume, frequency, self.__currPattern]
         # self.queue.put((last_volume,frequency,self.__currPattern))
 
@@ -110,11 +118,6 @@ class soundHandler(object):
 
         self.stream.close()
 
-    """def __getBlockingFunction(self):
-        tupleData = self.queue.get()
-        self.__handle_volume_data(tupleData[0],tupleData[1],tupleData[2])
-"""
-
 # ----- just for testing purposes ----- #
 
 
@@ -123,9 +126,9 @@ def main():
     handler = soundHandler()
 
     def callback(volume, frequency, pattern):
-        print("This is the volume: " + str(volume))
+
         print("This is the frequency: " + str(frequency))
-        print("This is the pattern: " + str(pattern))
+
         return volume
 
     handler.start_stream(callback_function=callback)
