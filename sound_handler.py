@@ -8,9 +8,6 @@ import Queue
 import unirest
 
 
-
-
-
 """
 soundHandler class, for Neil's IoT Thing
 """
@@ -38,9 +35,8 @@ class soundHandler(object):
         self.stream = None
         self.__currPattern = 0
         self.__isActive = False
-        self.data_tuple = [0,0,0]
-        #self.queue = Queue.Queue()
-
+        self.data_tuple = [0, 0, 0]
+        # self.queue = Queue.Queue()
 
     def close_stream(self):
         if self.__isActive:
@@ -53,12 +49,11 @@ class soundHandler(object):
 
         return round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
 
-
-    def __update_curr_pattern(self,response):
+    def __update_curr_pattern(self, response):
 
         self.__currPattern = int(response.raw_body)
 
-    def __frequencySigmoid(self,freq):
+    def __frequencySigmoid(self, freq):
         return round(100 / (1 + 10 * math.exp(-0.0003 * freq)))
 
     def update_sigmoid_params(self, max_value=100, input_dependency=-0.0003, scale_factor=8):
@@ -74,13 +69,9 @@ class soundHandler(object):
         """Private function used to interface with pyAudio"""
         audio_data = np.fromstring(in_data, dtype=np.int16)
 
-
-
-        if int(frame_count) % 2 == 0 :
+        if int(frame_count) % 2 == 0:
             url = "https://sound-visualizer-6443f.firebaseio.com/PatternID.json"
-            unirest.get(url,callback=self.__update_curr_pattern)
-
-
+            unirest.get(url, callback=self.__update_curr_pattern)
 
         # do processing here
         last_volume = self.__sigmoid(max(audio_data))
@@ -91,8 +82,8 @@ class soundHandler(object):
         frequency = abs(frequency)
         frequency = np.average(frequency)
         frequency = self.__frequencySigmoid(frequency)
-        self.data_tuple = [last_volume,frequency,self.__currPattern]
-        #self.queue.put((last_volume,frequency,self.__currPattern))
+        self.data_tuple = [last_volume, frequency, self.__currPattern]
+        # self.queue.put((last_volume,frequency,self.__currPattern))
 
         if self.__isActive:
             return (audio_data, pyaudio.paContinue)
@@ -115,7 +106,7 @@ class soundHandler(object):
         self.stream.start_stream()
 
         while self.stream.is_active():
-            self.__handle_volume_data(self.data_tuple[0],self.data_tuple[1],self.data_tuple[2])
+            self.__handle_volume_data(self.data_tuple[0], self.data_tuple[1], self.data_tuple[2])
 
         self.stream.close()
 
@@ -126,11 +117,12 @@ class soundHandler(object):
 
 # ----- just for testing purposes ----- #
 
+
 def main():
 
     handler = soundHandler()
 
-    def callback(volume,frequency,pattern):
+    def callback(volume, frequency, pattern):
         print("This is the volume: " + str(volume))
         print("This is the frequency: " + str(frequency))
         print("This is the pattern: " + str(pattern))
