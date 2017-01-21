@@ -50,8 +50,8 @@ class soundHandler(object):
         return round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
 
     def __update_curr_pattern(self, response):
-
-        self.__currPattern = int(response.raw_body)
+        if response.raw_body.isdigit():
+            self.__currPattern = int(response.raw_body)
 
     def __frequencySigmoid(self, freq):
         return round(100 / (1 + 10 * math.exp(-0.0003 * freq)))
@@ -80,7 +80,6 @@ class soundHandler(object):
         fftData = abs(np.fft.rfft(audio_data)) ** 2
         which = fftData[1:].argmax() + 1
 
-
         if which != len(fftData) - 1:
             y0, y1, y2 = np.log(fftData[which - 1:which + 2:])
             x1 = (y2 - y0) * .5 / (2 * y1 - y2 - y0)
@@ -88,7 +87,6 @@ class soundHandler(object):
             frequency = (which + x1) * self.__RATE / self.__CHUNK
         else:
             frequency = which * self.__RATE / self.__CHUNK
-
 
         self.data_tuple = [last_volume, frequency, self.__currPattern]
         # self.queue.put((last_volume,frequency,self.__currPattern))

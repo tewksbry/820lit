@@ -121,6 +121,9 @@ class PatternSet:
 
 raindowColors = []
 grayScale = [LED(i, i, i, i) for i in range(255, -1, -1)]
+redToWhite = [LED(255, i, i, i) for i in range(256)]
+blueToWhite = [LED(255, i, i, i) for i in range(256)]
+greenToWhite = [LED(255, i, i, i) for i in range(256)]
 
 
 RGB = [255, 0, 0]
