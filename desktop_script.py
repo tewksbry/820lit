@@ -66,8 +66,12 @@ def sound_callback(in_data, frame_count, time_info, flag):
 def main():
     # visualizer = Visualizer(pattern=pattern.rainbow())
     # visualizer.play(delay=0)
-
-    visualizer = Visualizer()
+    p = pattern.rainbowPatternSet()
+    visualizer = Visualizer(patternSet=p)
+    # while True:
+    #     visualizer.update(pattern.sparkle())
+    #     visualizer.checkClosure()
+    visualizer.play(delay=100)
     handler = soundHandler()
 
     def new_pattern(volume, frequency, pattern):
@@ -79,7 +83,7 @@ def main():
         visualizer.checkClosure()
         return volume
 
-    handler.start_stream(callback_function=new_pattern)
+    # handler.start_stream(callback_function=new_pattern)
 
 
 main()

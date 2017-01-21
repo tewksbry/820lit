@@ -101,7 +101,7 @@ class PatternSet:
         self.nextIndex = 0
 
     def next(self, width=240):
-        nextPattern = Pattern([LED()] * width)
+        nextPattern = Pattern(arr=[])
         if self.filltype == "repeat":
             pattern = self.patternSet[self.nextIndex]
             for _ in range(width / pattern.patternwidth + 1):
@@ -113,7 +113,7 @@ class PatternSet:
         nextPattern.trim(width)
 
         self.nextIndex += 1
-        if self.nextIndex == self.patternLength:
+        if self.nextIndex == len(self.patternSet):
             self.nextIndex = 0
 
         return nextPattern
@@ -158,17 +158,17 @@ def rainbowPatternSet():
     patternArr = []
     for color in raindowColors:
         patternArr.append(Pattern([color]))
-    return PatternSet(patternwidth=1, pattern=patternArr)
+    return PatternSet(patternSet=patternArr)
 
 
 def sparkle(width=240):
     noVolumeBar = Pattern([LED()] * width)
     for i in range(10):
         ChosenOne = random.randint(0, 239)
-        noVolumeBar.arr[ChosenOne] = LED(R=255, G=59)
+        noVolumeBar.arr[ChosenOne] = LED(R=255)
     for i in range(10):
         ChosenOne = random.randint(0, 239)
-        noVolumeBar.arr[ChosenOne] = LED(R=255, G=208)
+        noVolumeBar.arr[ChosenOne] = LED(R=255, G=100)
     return noVolumeBar
 
 
