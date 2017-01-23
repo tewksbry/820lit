@@ -3,18 +3,6 @@
 #define PIN 6
 #define NUM_PIXELS 240
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ800);
-
-// Parameters
-uint8_t volume = 0;
-uint8_t prev_volume = 0;
-uint8_t frequency = 0;
-uint8_t prev_frequency = 0;
-float fade = 0.7;
-float cutoff = 0.7;
-bool fill = false;
- 
-
 enum Params {
   Volume = 'v',
   Frequency = 'f',
@@ -26,6 +14,28 @@ typedef struct{
   uint8_t B;
   uint8_t W;
 } COLOR;
+
+typedef enum {
+  White = 0,
+  Rainbow,
+  Random,
+  Random_bright,
+} Palette_type;
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ800);
+
+// Parameters
+uint8_t volume = 0;
+uint8_t prev_volume = 0;
+uint8_t frequency = 0;
+uint8_t prev_frequency = 0;
+float fade = 0.2;
+float cutoff = 1;
+bool fill = false;
+Palette_type palette = Random;
+ 
+
+
 
 bool read(char &character, long timeout = 1000) {
   long start = millis();
@@ -42,7 +52,6 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   strip.begin();
-//  strip.setPixelColor(3, 0,0,255,255);
   strip.show();
 }
 
@@ -81,7 +90,42 @@ COLOR getRGBW(uint32_t color){
    return c;
 }
 
+int normalizeIndex(long i, int len, int fullLen){
+  return i*fullLen/len;
+}
 
+COLOR rainbowPalette(int i, int len){
+  i = normalizeIndex(i, len, 768);
+  if (i < 256){
+    return COLOR{(uint8_t)(255-i), (uint8_t)i, 0, 0};
+  }else if (i < 512){
+    i -= 256;
+    return COLOR{0, (uint8_t)(255-i), (uint8_t)i, 0};
+  }else{
+    i -= 512;
+    return COLOR{ (uint8_t)i, 0,(uint8_t)(255-i), 0};
+  }
+}
+
+
+uint32_t getColor(int i, int len){
+  COLOR c;
+  switch (palette){
+    case White:
+      c = COLOR{255,255,255,255};
+      break;
+    case Rainbow:
+      c = rainbowPalette(i, len);
+      break;
+    case Random:
+      c = COLOR{(uint8_t)random(0, 256), (uint8_t)random(0, 256), (uint8_t)random(0, 256), 0};
+      break;
+    case Random_bright:
+      c = COLOR{(uint8_t)random(0, 256), (uint8_t)random(0, 256), (uint8_t)random(0, 256), (uint8_t)random(0, 256)};
+      break;
+  }
+  return colorAsInt(c);
+}
 
 
 void middleOutPattern(){
@@ -91,49 +135,53 @@ void middleOutPattern(){
     strip.setPixelColor(i, colorAsInt(c));
   }
 
-  uint8_t volumeRange = volume*NUM_PIXELS*0.01*0.5;
   uint8_t middlePixel = NUM_PIXELS/2;
+  uint8_t volumeRange = middlePixel*0.01*volume;
   for (int i = 0; i < volumeRange; i++){
-    strip.setPixelColor(middlePixel+i, 0,0,0,255);
-    strip.setPixelColor(middlePixel-i -1, 0,0,0,255);
+    strip.setPixelColor(middlePixel+i, getColor(i, middlePixel));
+    strip.setPixelColor(middlePixel-i -1, getColor(i, middlePixel));
   }
 }
 
-void fillColor(const COLOR& c){
+void fillPalette(){
   for (int i = 0; i < NUM_PIXELS; i++){
-      strip.setPixelColor(i, c.R, c.G, c.B, c.W);
+      strip.setPixelColor(i, getColor(i, NUM_PIXELS));
+  }
+}
+
+void fillColor(const uint32_t& c){
+  for (int i = 0; i < NUM_PIXELS; i++){
+      strip.setPixelColor(i, c);
     }
 }
 
 
-void strobe(bool colored = false){
+void strobe(bool fromPalette = false){
+  delay(30);
   if (strip.getPixelColor(0)){
     strip.clear();
     return;
+    
   }
   
-  COLOR c;
-  if (colored){
-    c.R = random(0, 256);
-    c.G = random(0, 256);
-    c.B = random(0, 256);
+  if (fromPalette){
+    fillPalette();
   }else{
-    c.W = 255;
+    fillColor(getColor(0,0));
   }
-  fillColor(c);
-  
 }
 
 void loop() {
-  strip.setBrightness(50);
+//  strip.setBrightness(50);
   while (Serial.available()){
     handleSerial();
   }
-  middleOutPattern();
+  fillPalette();
+//  middleOutPattern();
 //  strobe();
 //  strobe(true);
   strip.show();
-  delay(30);
+//  delay(30);
 
   prev_volume = volume;
   prev_frequency = frequency;
