@@ -1,6 +1,7 @@
 from sound_handler import soundHandler
 import serial
 import struct
+import time
 
 
 def normalize_frequency(f):
@@ -23,7 +24,9 @@ def main():
         # print "v", volume
         # print "f", frequency
         ser.write(struct.pack('>BBB', ord(':'), ord('v'), volume))
+        # time.sleep(0.01)
         # ser.write(struct.pack('>BBB', ord(':'), ord('f'), normalize_frequency(frequency)))
+        print normalize_frequency(frequency)
         return volume
 
     handler.start_stream(callback_function=new_pattern)
