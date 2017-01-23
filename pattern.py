@@ -154,6 +154,11 @@ def defaultPatternSet():
     return PatternSet(patternSet=patternArr)
 
 
+def strobePatternSet():
+    patternArr = [Pattern([LED(W=255)]), Pattern([LED()])]
+    return PatternSet(patternSet=patternArr)
+
+
 def rainbowPatternSet():
     patternArr = []
     for color in raindowColors:

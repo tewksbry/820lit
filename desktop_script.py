@@ -67,11 +67,11 @@ def main():
     # visualizer = Visualizer(pattern=pattern.rainbow())
     # visualizer.play(delay=0)
     p = pattern.rainbowPatternSet()
-    visualizer = Visualizer(patternSet=p)
+    visualizer = Visualizer(patternSet=pattern.strobePatternSet())
     # while True:
     #     visualizer.update(pattern.sparkle())
     #     visualizer.checkClosure()
-    visualizer.play(delay=100)
+    visualizer.play(delay=0)
     handler = soundHandler()
 
     def new_pattern(volume, frequency, pattern):
@@ -83,7 +83,7 @@ def main():
         visualizer.checkClosure()
         return volume
 
-    # handler.start_stream(callback_function=new_pattern)
+    handler.start_stream(callback_function=new_pattern)
 
 
 main()

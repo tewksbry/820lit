@@ -47,13 +47,14 @@ class Visualizer:
 
             pygame.draw.rect(self.display, pattern.arr[i].RGB(
             ), (left, top, self.pixelWidth, self.pixelHeight))
-            self.strand.setPixelColor(i, *pattern.arr[i].RGBW())
+            # self.strand.setPixelColor(i, *pattern.arr[i].RGBW())
             # self.strand.send()
             # self.strand.show()
             # self.strand.send()
             # time.sleep(0.1)
 
-        self.strand.show()
+        # self.strand.show()
+        self.strand.setPixelArray(pattern)
         self.strand.send()
         pygame.display.update()
         end = datetime.datetime.now()
