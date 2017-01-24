@@ -103,12 +103,20 @@ class soundHandler(object):
 
         self.__handle_volume_data = callback_function
 
-        self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16,
-                                             channels=self.__CHANNELS,
-                                             rate=self.__RATE,
-                                             frames_per_buffer=self.__CHUNK,
-                                             input=True,
-                                             stream_callback=self.__callback)
+        p = pyaudio.PyAudio()
+        device_index = 0
+        for x in range(p.get_device_count()):
+            if p.get_device_info_by_index(x)["name"] == u'Soundflower (2ch)':
+                device_index = x
+
+        self.stream = p.open(format=pyaudio.paInt16,
+                             channels=self.__CHANNELS,
+                             rate=self.__RATE,
+                             frames_per_buffer=self.__CHUNK,
+                             input=True,
+                             stream_callback=self.__callback,
+                             input_device_index=device_index)
+
         self.stream.start_stream()
 
         while self.stream.is_active():
@@ -124,8 +132,9 @@ def main():
     handler = soundHandler()
 
     def callback(volume, frequency, pattern):
-
-        print("This is the frequency: " + str(frequency))
+        # print "v", volume
+        # print "f", frequency
+        # print("This is the frequency: " + str(frequency))
 
         return volume
 

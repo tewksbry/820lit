@@ -20,7 +20,8 @@ typedef enum {
   Rainbow,
   Random,
   Random_bright,
-  Grayscale
+  Grayscale,
+  USC
 } Palette_type;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ800);
@@ -28,12 +29,14 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ8
 // Parameters
 uint8_t volume = 0;
 uint8_t prev_volume = 0;
-uint8_t frequency = 50;
+uint8_t frequency = 0;
 uint8_t prev_frequency = 0;
-float fade = 0.5;
+uint8_t freq_index = 50;
+float fade = 0.7;
 float cutoff = 1;
 bool fill = false;
-Palette_type palette = Random;
+bool dim_center = false;
+Palette_type palette = USC;
  
 
 
@@ -110,6 +113,25 @@ COLOR rainbowPalette(int i, int len){
   }
 }
 
+COLOR USCPalette(int i, int len){
+  i = i % 20;
+  len = 20;
+  COLOR r{255, 0, 0, 0};
+//  COLOR y{255, 204, 0, 0};
+  int r_range = 0;
+  int g_range = -70;
+  int b_range = 0;
+  
+  int fullLen = 2;
+  i = normalizeIndex(i, len, fullLen);
+
+  COLOR c{255, 70, 0, 0};
+  c.R += r_range*i/(fullLen-1);
+  c.G += g_range*i/(fullLen-1);
+  c.B += b_range*i/(fullLen-1);
+  return c;
+}
+
 COLOR grayscalePalette(int i, int len){
   i = normalizeIndex(i, len, 255);
   return COLOR{0, 0, 0, (uint8_t)(i+1)};
@@ -133,6 +155,9 @@ COLOR getColor(int i, int len){
       break;
     case Grayscale:
       c = grayscalePalette(i, len);
+      break;
+    case USC:
+      c = USCPalette(i, len);
   }
   return c;
 }
@@ -147,14 +172,17 @@ void middleOutPattern(){
 
   uint8_t middlePixel = NUM_PIXELS/2;
   uint8_t volumeRange = middlePixel*0.01*volume;
-  uint8_t color = colorAsInt(getColor(frequency, 100));
+  freq_index += sqrt(frequency-prev_frequency);
+  COLOR color = getColor(frequency, 100);
   for (int i = 0; i < volumeRange; i++){
     COLOR c = getColor(i, middlePixel);
-    dim(c, (float)(i+1)/(middlePixel+1));
-    strip.setPixelColor(middlePixel+i, colorAsInt(c));
-    strip.setPixelColor(middlePixel-i -1, colorAsInt(c));
-//    strip.setPixelColor(middlePixel+i, color);
-//    strip.setPixelColor(middlePixel-i -1, color);
+    if (dim_center){
+      dim(c, (float)(i+1)/(middlePixel+1));
+    }
+//    strip.setPixelColor(middlePixel+i, colorAsInt(c));
+//    strip.setPixelColor(middlePixel-i -1, colorAsInt(c));
+    strip.setPixelColor(middlePixel+i, colorAsInt(color));
+    strip.setPixelColor(middlePixel-i -1, colorAsInt(color));
   }
 }
 
@@ -191,8 +219,8 @@ void loop() {
   while (Serial.available()){
     handleSerial();
   }
-//  fillPalette();
-  middleOutPattern();
+  fillPalette();
+//  middleOutPattern();
 //  strobe();
 //  strobe(true);
   strip.show();
