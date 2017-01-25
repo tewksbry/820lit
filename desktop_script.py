@@ -4,6 +4,7 @@ import struct
 import time
 import sys
 import queue
+import threading
 
 
 def normalize_frequency(f):
@@ -19,12 +20,11 @@ def normalize_frequency(f):
 
 
 def passParam(ser, name, *argv):
-    print ":" + name + " " + " ".join(map(str, argv))
-    print "arg length", len(argv)
+    # print ":" + name + " " + " ".join(map(str, argv))
     ser.write(struct.pack('>BB', ord(':'), ord(name)))
     for arg in argv:
-        time.sleep(0.01)
         ser.write(struct.pack('>B', arg))
+        time.sleep(0.01)
     # print "BB:", bb
     # ser.write(bb)
 
@@ -34,7 +34,7 @@ def main():
     port = '/dev/tty.usbmodem1451'
     if len(sys.argv) >= 2:
         port = sys.argv[1]
-    ser = serial.Serial(port, 9600, writeTimeout=0)
+    ser = serial.Serial(port, 115200)
     handler = soundHandler()
     cmd_queue = queue.Queue()
 
@@ -44,8 +44,7 @@ def main():
             if len(cmd) < 1:
                 return
             args = cmd.split()
-
-            time.sleep(0.1)
+            print args
             if args[0] == 'p' or args[0] == "palette":
                 passParam(ser, 'p', int(args[1]))
             elif args[0] == 'a' or args[0] == 'fade':
@@ -63,22 +62,30 @@ def main():
             elif args[0] == 'e' or args[0] == 'brightedges':
                 passParam(ser, 'e', int(args[1]))
             elif args[0] == 'exit':
+                ser.close()
                 sys.exit(0)
-            time.sleep(0.1)
 
     def command(queue):
-        inp = raw_input()
-        queue.put(inp)
+        while (True):
+            inp = raw_input()
+            queue.put(inp)
+            if inp == "exit":
+                break
 
     def new_pattern(volume, frequency, patt):
-        # passParam(ser, 'v', volume)
-        # passParam(ser, 'f', normalize_frequency(frequency))
-        command(cmd_queue)
+        ser.readline()
+        passParam(ser, 'v', volume)
+        passParam(ser, 'f', normalize_frequency(frequency))
+        # time.sleep(0.1)
+        # command(cmd_queue)
         checkForInput()
-        print "v", volume
-        print "f", normalize_frequency(frequency)
+        # print "v", volume
+        # print "f", normalize_frequency(frequency)
+        ser.reset_output_buffer()
         return volume
 
+    commands = threading.Thread(target=command, args=(cmd_queue,))
+    commands.start()
     handler.start_stream(callback_function=new_pattern)
 
 

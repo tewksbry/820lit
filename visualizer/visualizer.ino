@@ -50,20 +50,21 @@ float fade = 0.7;
 float cutoff = 1;
 bool bright_edges = true;
 bool dim_center = true;
-Palette_type palette = USC;
+Palette_type palette = Rainbow;
 Display_type display_t = Fill;
 COLOR singleLight{0, 0, 0, 0};
  
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(115200);
   strip.begin();
+  strip.setBrightness(255);
   strip.show();
 }
 
 
 //SERIAL PROCESSING
-bool read(char &character, long timeout = 1000) {
+bool read(char &character, long timeout = 100) {
   long start = millis();
   while (!Serial.available()) {
     if (millis() - start > timeout) {
@@ -110,43 +111,30 @@ bool handleSerial(){
       singleLight.G = 0;
       singleLight.B = 0;
       singleLight.W = 0;
-      if (!read(character)) { 
-//        strip.setPixelColor(10, 0, 0, 0, 255);
-        return false; }
+      if (!read(character)) { return false; }
       singleLight.R = character;
-//      strip.setPixelColor(character, 255, 0, 0, 0);
       
-      if (!read(character)) { 
-//        strip.setPixelColor(20, 0, 0, 0, 255);
-        return false; }
+      if (!read(character)) { return false; }
       singleLight.G = character;
-//      strip.setPixelColor(character, 0, 255, 0, 0);
       
-      if (!read(character)) { 
-//        strip.setPixelColor(30, 0, 0, 0, 255);
-        return false; }
+      if (!read(character)) { return false; }
       singleLight.B = character;
-//      strip.setPixelColor(character, 0, 0, 255, 0);
       
-      if (!read(character)) { 
-//        strip.setPixelColor(40, 0, 0, 0, 255);
-        return false; }
+      if (!read(character)) { return false; }
       singleLight.W = character;
-//      strip.setPixelColor(character, 0, 0, 0, 255);
-//      strip.show();
-//      delay(5000);
+
       
       break;
     case Brightness:
       if (!read(character)) { return false; }
-      strip.setBrightness(character);
+      strip.setBrightness((int)character);
       break;
     case DimCenter:
       if (!read(character)) { return false; }
       if (character == 'Y' || character == 'y' || character == 'N' || character == 'n'){
         dim_center = (character == 'Y' || character == 'y');
       }else{
-        dim_center = character;
+        dim_center = character != 0;
       }
       break;
     case BrightEdges:
@@ -154,7 +142,7 @@ bool handleSerial(){
       if (character == 'Y' || character == 'y' || character == 'N' || character == 'n'){
         bright_edges = (character == 'Y' || character == 'y');
       }else{
-        bright_edges = character;
+        bright_edges = character != 0;
       }
       break;
   }
@@ -261,9 +249,9 @@ void middleOutPattern(){
     COLOR c;
     if (display_t == MiddleOutFill){
       c = getRGBW(strip.getPixelColor(middle_pixel+active_range));
-//      if (dim_center){
-//        dim(c, (float)(i+1)/(middle_pixel));
-//      }
+      if (dim_center){
+        dim(c, (float)(i+1)/(middle_pixel));
+      }
     }else{
       c = getRGBW(strip.getPixelColor(middle_pixel+i));
       dim(c, fade);
@@ -322,12 +310,12 @@ void displayPattern(){
 }
 
 void loop() {
-  strip.setBrightness(255);
+  Serial.println('*');
   while (Serial.available()){
     if (!handleSerial()){
       strip.setPixelColor(0, 0,0,0,255);
       strip.show();
-      delay(5000);
+//      delay(5000);
     }
   }
   displayPattern();
