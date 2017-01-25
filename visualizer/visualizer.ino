@@ -96,11 +96,11 @@ bool handleSerial(){
       break;
     case Fade:
       if (!read(character)) { return false; }
-      fade = character/100.0;
+      fade =  (float)character*0.01;
       break;
     case Cutoff:
       if (!read(character)) { return false; }
-      cutoff = character/100.0;
+      cutoff = (float)character*0.01;
       break;
     case Display:
       if (!read(character)) { return false; }
@@ -122,8 +122,6 @@ bool handleSerial(){
       
       if (!read(character)) { return false; }
       singleLight.W = character;
-
-      
       break;
     case Brightness:
       if (!read(character)) { return false; }
@@ -131,19 +129,11 @@ bool handleSerial(){
       break;
     case DimCenter:
       if (!read(character)) { return false; }
-      if (character == 'Y' || character == 'y' || character == 'N' || character == 'n'){
-        dim_center = (character == 'Y' || character == 'y');
-      }else{
-        dim_center = character != 0;
-      }
+      dim_center = character != 0;
       break;
     case BrightEdges:
       if (!read(character)) { return false; }
-      if (character == 'Y' || character == 'y' || character == 'N' || character == 'n'){
-        bright_edges = (character == 'Y' || character == 'y');
-      }else{
-        bright_edges = character != 0;
-      }
+      bright_edges = character != 0;
       break;
   }
   return true;
@@ -248,7 +238,7 @@ void middleOutPattern(){
   for (int i = active_range; i < middle_pixel; i++){
     COLOR c;
     if (display_t == MiddleOutFill){
-      c = getRGBW(strip.getPixelColor(middle_pixel+active_range));
+      c = getColor(active_range, range_size);
       if (dim_center){
         dim(c, (float)(i+1)/(middle_pixel));
       }

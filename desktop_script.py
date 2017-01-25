@@ -20,13 +20,10 @@ def normalize_frequency(f):
 
 
 def passParam(ser, name, *argv):
-    # print ":" + name + " " + " ".join(map(str, argv))
     ser.write(struct.pack('>BB', ord(':'), ord(name)))
     for arg in argv:
         ser.write(struct.pack('>B', arg))
         time.sleep(0.01)
-    # print "BB:", bb
-    # ser.write(bb)
 
 
 def main():
@@ -34,54 +31,65 @@ def main():
     port = '/dev/tty.usbmodem1451'
     if len(sys.argv) >= 2:
         port = sys.argv[1]
+    ser = None
     ser = serial.Serial(port, 115200)
     handler = soundHandler()
     cmd_queue = queue.Queue()
+    cmd_dict = {}
 
     def checkForInput():
         while(not cmd_queue.empty()):
             cmd = cmd_queue.get()
             if len(cmd) < 1:
-                return
+                continue
             args = cmd.split()
-            print args
-            if args[0] == 'p' or args[0] == "palette":
-                passParam(ser, 'p', int(args[1]))
-            elif args[0] == 'a' or args[0] == 'fade':
-                passParam(ser, 'a', int(float(args[1]) * 100))
-            elif args[0] == 'c' or args[0] == 'cutoff':
-                passParam(ser, 'v', int(float(args[1]) * 100))
-            elif args[0] == 'd' or args[0] == 'display':
-                passParam(ser, 'd', int(args[1]))
-            elif args[0] == 'l' or args[0] == 'light':
-                passParam(ser, 'l', *map(int, args[1:]))
-            elif args[0] == 'b' or args[0] == 'brightness':
-                passParam(ser, 'l', *map(int, args[1:]))
-            elif args[0] == 's' or args[0] == 'dimcenter':
-                passParam(ser, 's', int(args[1]))
-            elif args[0] == 'e' or args[0] == 'brightedges':
-                passParam(ser, 'e', int(args[1]))
-            elif args[0] == 'exit':
+            cmd_dict[args[0]] = args[1:]
+
+        for key, value in cmd_dict.iteritems():
+            if key == '-p' or key == "--palette":
+                passParam(ser, 'p', int(value[0]))
+            elif key == '-a' or key == '--fade':
+                passParam(ser, 'a', int(float(value[0]) * 100))
+            elif key == '-c' or key == '--cutoff':
+                passParam(ser, 'c', int(float(value[0]) * 100))
+            elif key == '-d' or key == '--display':
+                passParam(ser, 'd', int(value[0]))
+            elif key == '-l' or key == '--light':
+                passParam(ser, 'l', *map(int, value))
+            elif key == '-b' or key == '--brightness':
+                passParam(ser, 'b', int(value[0]))
+            elif key == '-s' or key == '--dimcenter':
+                passParam(ser, 's', int(value[0]))
+            elif key == '-e' or key == '--brightedges':
+                passParam(ser, 'e', int(value[0]))
+            elif key == '-exit':
                 ser.close()
                 sys.exit(0)
+            elif key == '-h' or key == '--help':
+                print "Availible commands:"
+                print "Palette number: -p [num]"
+                print "Display type number: -d [num]"
+                print "Fade rate: -a [0 - 1]"
+                print "Cutoff: -c [0 - 1]"
+                print "Single light color: -l [R] [G] [B] [W]"
+                print "Brightness: -b [0 - 255]"
+                print "Dim center: -s [0 or 1]"
+                print "Brighten edges: -e [0 or 1]"
+        cmd_dict.clear()
 
     def command(queue):
         while (True):
             inp = raw_input()
             queue.put(inp)
-            if inp == "exit":
+            if inp == "-exit":
                 break
 
     def new_pattern(volume, frequency, patt):
         ser.readline()
         passParam(ser, 'v', volume)
         passParam(ser, 'f', normalize_frequency(frequency))
-        # time.sleep(0.1)
-        # command(cmd_queue)
         checkForInput()
-        # print "v", volume
-        # print "f", normalize_frequency(frequency)
-        ser.reset_output_buffer()
+        # ser.reset_output_buffer()
         return volume
 
     commands = threading.Thread(target=command, args=(cmd_queue,))
