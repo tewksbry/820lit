@@ -6,6 +6,14 @@
 enum Params {
   Volume = 'v',
   Frequency = 'f',
+  Palette = 'p',
+  Fade = 'a',
+  Cutoff = 'c',
+  Display = 'd',
+  LightColor = 'l',
+  Brightness = 'b',
+  DimCenter = 's',
+  BrightEdges = 'e'
 };
 
 typedef struct{
@@ -16,7 +24,7 @@ typedef struct{
 } COLOR;
 
 typedef enum {
-  White = 0,
+  SingleLight = 0,
   Rainbow,
   Random,
   Random_bright,
@@ -24,23 +32,37 @@ typedef enum {
   USC
 } Palette_type;
 
+typedef enum {
+  Fill = 0,
+  MiddleOut,
+  MiddleOutFill,
+  Strobe,
+} Display_type;
+
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ800);
 
-// Parameters
+// PARAMETERS
 uint8_t volume = 0;
 uint8_t prev_volume = 0;
 uint8_t frequency = 0;
 uint8_t prev_frequency = 0;
-uint8_t freq_index = 50;
 float fade = 0.7;
 float cutoff = 1;
-bool fill = false;
-bool dim_center = false;
+bool bright_edges = true;
+bool dim_center = true;
 Palette_type palette = USC;
+Display_type display_t = Fill;
+COLOR singleLight{0, 0, 0, 0};
  
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  strip.begin();
+  strip.show();
+}
 
 
-
+//SERIAL PROCESSING
 bool read(char &character, long timeout = 1000) {
   long start = millis();
   while (!Serial.available()) {
@@ -52,18 +74,12 @@ bool read(char &character, long timeout = 1000) {
   return true;
 }
 
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
-  strip.begin();
-  strip.show();
-}
 
 bool handleSerial(){
   char character;
   if (!read(character) || character != ':') { return false; }
   if (!read(character)) { return false; }
-
+  
   switch(character) {
     case Volume:
       if (!read(character)) { return false; }
@@ -73,9 +89,80 @@ bool handleSerial(){
       if (!read(character)) { return false; }
       frequency = character;
       break;
+    case Palette:
+      if (!read(character)) { return false; }
+      palette = (Palette_type)(int)character;
+      break;
+    case Fade:
+      if (!read(character)) { return false; }
+      fade = character/100.0;
+      break;
+    case Cutoff:
+      if (!read(character)) { return false; }
+      cutoff = character/100.0;
+      break;
+    case Display:
+      if (!read(character)) { return false; }
+      display_t = (Display_type)(int)character;
+      break;
+    case LightColor:
+      singleLight.R = 0;
+      singleLight.G = 0;
+      singleLight.B = 0;
+      singleLight.W = 0;
+      if (!read(character)) { 
+//        strip.setPixelColor(10, 0, 0, 0, 255);
+        return false; }
+      singleLight.R = character;
+//      strip.setPixelColor(character, 255, 0, 0, 0);
+      
+      if (!read(character)) { 
+//        strip.setPixelColor(20, 0, 0, 0, 255);
+        return false; }
+      singleLight.G = character;
+//      strip.setPixelColor(character, 0, 255, 0, 0);
+      
+      if (!read(character)) { 
+//        strip.setPixelColor(30, 0, 0, 0, 255);
+        return false; }
+      singleLight.B = character;
+//      strip.setPixelColor(character, 0, 0, 255, 0);
+      
+      if (!read(character)) { 
+//        strip.setPixelColor(40, 0, 0, 0, 255);
+        return false; }
+      singleLight.W = character;
+//      strip.setPixelColor(character, 0, 0, 0, 255);
+//      strip.show();
+//      delay(5000);
+      
+      break;
+    case Brightness:
+      if (!read(character)) { return false; }
+      strip.setBrightness(character);
+      break;
+    case DimCenter:
+      if (!read(character)) { return false; }
+      if (character == 'Y' || character == 'y' || character == 'N' || character == 'n'){
+        dim_center = (character == 'Y' || character == 'y');
+      }else{
+        dim_center = character;
+      }
+      break;
+    case BrightEdges:
+      if (!read(character)) { return false; }
+      if (character == 'Y' || character == 'y' || character == 'N' || character == 'n'){
+        bright_edges = (character == 'Y' || character == 'y');
+      }else{
+        bright_edges = character;
+      }
+      break;
   }
+  return true;
 }
 
+//HELPER FUNCTIONS
+ 
 uint32_t colorAsInt(const COLOR &c){
   return ((uint32_t)c.W << 24) | ((uint32_t)c.R << 16) | ((uint32_t)c.G <<  8) | c.B;
 }
@@ -97,8 +184,11 @@ COLOR getRGBW(uint32_t color){
 }
 
 int normalizeIndex(long i, int len, int fullLen){
-  return i*fullLen/len;
+  return (i % len)*fullLen/len;
 }
+
+
+//PALETTES
 
 COLOR rainbowPalette(int i, int len){
   i = normalizeIndex(i, len, 768);
@@ -114,22 +204,17 @@ COLOR rainbowPalette(int i, int len){
 }
 
 COLOR USCPalette(int i, int len){
-  i = i % 20;
   len = 20;
-  COLOR r{255, 0, 0, 0};
-//  COLOR y{255, 204, 0, 0};
-  int r_range = 0;
-  int g_range = -70;
-  int b_range = 0;
+  i = i % len;
   
-  int fullLen = 2;
-  i = normalizeIndex(i, len, fullLen);
-
-  COLOR c{255, 70, 0, 0};
-  c.R += r_range*i/(fullLen-1);
-  c.G += g_range*i/(fullLen-1);
-  c.B += b_range*i/(fullLen-1);
-  return c;
+  COLOR r{255, 0, 0, 0};
+  COLOR y{255, 70, 0, 0};
+  
+  if (i < len/2){
+    return r;
+  }else{
+    return y;
+  }
 }
 
 COLOR grayscalePalette(int i, int len){
@@ -141,8 +226,8 @@ COLOR grayscalePalette(int i, int len){
 COLOR getColor(int i, int len){
   COLOR c;
   switch (palette){
-    case White:
-      c = COLOR{255,255,255,255};
+    case SingleLight:
+      c = singleLight;
       break;
     case Rainbow:
       c = rainbowPalette(i, len);
@@ -158,31 +243,50 @@ COLOR getColor(int i, int len){
       break;
     case USC:
       c = USCPalette(i, len);
+      break;
   }
   return c;
 }
 
 
-void middleOutPattern(){
-  for (int i = 0; i < NUM_PIXELS; i++){
-    COLOR c = getRGBW(strip.getPixelColor(i));
-    dim(c, fade);
-    strip.setPixelColor(i, colorAsInt(c));
-  }
+// PATTERN DISPLAYS
 
-  uint8_t middlePixel = NUM_PIXELS/2;
-  uint8_t volumeRange = middlePixel*0.01*volume;
-  freq_index += sqrt(frequency-prev_frequency);
-  COLOR color = getColor(frequency, 100);
-  for (int i = 0; i < volumeRange; i++){
-    COLOR c = getColor(i, middlePixel);
-    if (dim_center){
-      dim(c, (float)(i+1)/(middlePixel+1));
+void middleOutPattern(){
+  uint8_t middle_pixel = NUM_PIXELS/2;
+  uint8_t range_size = middle_pixel*cutoff;
+  uint8_t active_range = range_size*0.01*volume;
+  uint8_t spillover_start = 2 * range_size - middle_pixel;
+
+  for (int i = active_range; i < middle_pixel; i++){
+    COLOR c;
+    if (display_t == MiddleOutFill){
+      c = getRGBW(strip.getPixelColor(middle_pixel+active_range));
+//      if (dim_center){
+//        dim(c, (float)(i+1)/(middle_pixel));
+//      }
+    }else{
+      c = getRGBW(strip.getPixelColor(middle_pixel+i));
+      dim(c, fade);
     }
-//    strip.setPixelColor(middlePixel+i, colorAsInt(c));
-//    strip.setPixelColor(middlePixel-i -1, colorAsInt(c));
-    strip.setPixelColor(middlePixel+i, colorAsInt(color));
-    strip.setPixelColor(middlePixel-i -1, colorAsInt(color));
+    strip.setPixelColor(middle_pixel+i, colorAsInt(c));
+    strip.setPixelColor(middle_pixel-i -1, colorAsInt(c));
+  }
+  for (int i = 0; i < active_range; i++){
+    COLOR c = getColor(frequency, 100);
+    if (bright_edges){
+      c.W = 255*i/range_size/5;
+    }
+    if (dim_center){
+      dim(c, (float)(i+1)/(range_size));
+    }
+    strip.setPixelColor(middle_pixel + i, colorAsInt(c));
+    strip.setPixelColor(middle_pixel - i - 1, colorAsInt(c));
+    
+    if ( i >= spillover_start){
+      uint8_t spillover = i - spillover_start;
+      strip.setPixelColor(NUM_PIXELS - spillover - 1, colorAsInt(c));
+      strip.setPixelColor(spillover, colorAsInt(c));
+    }
   }
 }
 
@@ -192,39 +296,42 @@ void fillPalette(){
   }
 }
 
-void fillColor(const uint32_t& c){
-  for (int i = 0; i < NUM_PIXELS; i++){
-      strip.setPixelColor(i, c);
-    }
-}
-
-
-void strobe(bool fromPalette = false){
+void strobe(){
   delay(30);
   if (strip.getPixelColor(0)){
     strip.clear();
     return;
     
   }
-  
-  if (fromPalette){
-    fillPalette();
-  }else{
-    fillColor(colorAsInt(getColor(0,0)));
+  fillPalette();
+}
+
+void displayPattern(){
+  switch (display_t){
+    case Fill:
+      fillPalette();
+      break;
+    case MiddleOut:
+    case MiddleOutFill:
+      middleOutPattern();
+      break;
+    case Strobe:
+      strobe();
+      break;
   }
 }
 
 void loop() {
-//  strip.setBrightness(50);
+  strip.setBrightness(255);
   while (Serial.available()){
-    handleSerial();
+    if (!handleSerial()){
+      strip.setPixelColor(0, 0,0,0,255);
+      strip.show();
+      delay(5000);
+    }
   }
-  fillPalette();
-//  middleOutPattern();
-//  strobe();
-//  strobe(true);
+  displayPattern();
   strip.show();
-//  delay(30);
 
   prev_volume = volume;
   prev_frequency = frequency;

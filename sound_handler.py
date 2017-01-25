@@ -69,9 +69,9 @@ class soundHandler(object):
         """Private function used to interface with pyAudio"""
         audio_data = np.fromstring(in_data, dtype=np.int16)
 
-        if int(frame_count) % 2 == 0:
-            url = "https://sound-visualizer-6443f.firebaseio.com/PatternID.json"
-            unirest.get(url, callback=self.__update_curr_pattern)
+        #if int(frame_count) % 2 == 0:
+        #   url = "https://sound-visualizer-6443f.firebaseio.com/PatternID.json"
+        #    unirest.get(url, callback=self.__update_curr_pattern)
 
         # do processing here
         last_volume = self.__sigmoid(max(audio_data))
