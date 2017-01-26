@@ -13,7 +13,8 @@ enum Params {
   LightColor = 'l',
   Brightness = 'b',
   DimCenter = 's',
-  BrightEdges = 'e'
+  BrightEdges = 'e',
+  CycleSpeed = 'y',
 };
 
 typedef struct{
@@ -29,7 +30,8 @@ typedef enum {
   Random,
   Random_bright,
   Grayscale,
-  USC
+  USC,
+  Mood,
 } Palette_type;
 
 typedef enum {
@@ -37,6 +39,7 @@ typedef enum {
   MiddleOut,
   MiddleOutFill,
   Strobe,
+  Cycle,
 } Display_type;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ800);
@@ -50,9 +53,11 @@ float fade = 0.7;
 float cutoff = 1;
 bool bright_edges = true;
 bool dim_center = true;
-Palette_type palette = Rainbow;
-Display_type display_t = Fill;
+Palette_type palette = Mood;
+Display_type display_t = Cycle;
 COLOR singleLight{0, 0, 0, 0};
+int cycle_index = 0;
+int cycle_length = 5000;
  
 void setup() {
   // put your setup code here, to run once:
@@ -135,6 +140,10 @@ bool handleSerial(){
       if (!read(character)) { return false; }
       bright_edges = character != 0;
       break;
+    case CycleSpeed:
+      if (!read(character)) { return false; }
+      cycle_length = character*100;
+      break;
   }
   return true;
 }
@@ -195,6 +204,19 @@ COLOR USCPalette(int i, int len){
   }
 }
 
+COLOR moodPalette(int i, int len){
+  i = normalizeIndex(i, len, 384);
+  if (i < 128){
+    return COLOR{(uint8_t)(50+i), 10, 128, 0};
+  }else if (i < 256){
+    i -= 128;
+    return COLOR{(uint8_t)(178-i), (uint8_t)(10+i), 128, 0};
+  }else if (i < 384){
+    i -= 256;
+    return COLOR{50, (uint8_t)(138-i), 128, 0};
+  }
+}
+
 COLOR grayscalePalette(int i, int len){
   i = normalizeIndex(i, len, 255);
   return COLOR{0, 0, 0, (uint8_t)(i+1)};
@@ -221,6 +243,9 @@ COLOR getColor(int i, int len){
       break;
     case USC:
       c = USCPalette(i, len);
+      break;
+    case Mood:
+      c = moodPalette(i, len);
       break;
   }
   return c;
@@ -295,6 +320,15 @@ void displayPattern(){
       break;
     case Strobe:
       strobe();
+      break;
+    case Cycle:
+      for (int i = 0; i < NUM_PIXELS; i++){
+          strip.setPixelColor(i, colorAsInt(getColor(cycle_index, cycle_length)));
+      }
+      cycle_index++;
+      if (cycle_index >= cycle_length){
+        cycle_index = 0;
+      }
       break;
   }
 }

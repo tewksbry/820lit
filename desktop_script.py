@@ -28,7 +28,7 @@ def passParam(ser, name, *argv):
 
 def main():
 
-    port = '/dev/tty.usbmodem1451'
+    port = '/dev/tty.usbmodem1461'
     if len(sys.argv) >= 2:
         port = sys.argv[1]
     ser = None
@@ -62,19 +62,24 @@ def main():
                 passParam(ser, 's', int(value[0]))
             elif key == '-e' or key == '--brightedges':
                 passParam(ser, 'e', int(value[0]))
+            elif key == '-y' or key == '--cyclespeed':
+                passParam(ser, 'y', int(value[0]))
             elif key == '-exit':
                 ser.close()
                 sys.exit(0)
             elif key == '-h' or key == '--help':
                 print "Availible commands:"
-                print "Palette number: -p [num]"
-                print "Display type number: -d [num]"
-                print "Fade rate: -a [0 - 1]"
-                print "Cutoff: -c [0 - 1]"
-                print "Single light color: -l [R] [G] [B] [W]"
-                print "Brightness: -b [0 - 255]"
-                print "Dim center: -s [0 or 1]"
-                print "Brighten edges: -e [0 or 1]"
+                print "Palette number: -p (--palette) [num]"
+                print "Display type number: -d (--display) [num]"
+                print "Fade rate: -a (--fade) [0 - 1]"
+                print "Cutoff: -c (--cutoff) [0 - 1]"
+                print "Single light color: -l (--light) [R] [G] [B] [W]"
+                print "Brightness: -b (--brightness) [0 - 255]"
+                print "Dim center: -s (--dimcenter) [0 or 1]"
+                print "Brighten edges: -e (--brightedges) [0 or 1]"
+                print "Cycle speed: -y (--cyclespeed) [1 - 255]"
+
+                print "Exit: -exit"
         cmd_dict.clear()
 
     def command(queue):
