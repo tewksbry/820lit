@@ -3,7 +3,7 @@ import serial
 import struct
 import time
 import sys
-import queue
+import Queue
 import threading
 
 
@@ -34,7 +34,7 @@ def main():
     ser = None
     ser = serial.Serial(port, 115200)
     handler = soundHandler()
-    cmd_queue = queue.Queue()
+    cmd_queue = Queue.Queue()
     cmd_dict = {}
 
     def checkForInput():
