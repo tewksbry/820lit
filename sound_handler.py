@@ -132,11 +132,11 @@ def main():
     handler = soundHandler()
 
     def callback(volume, frequency, pattern):
-        # print "v", volume
-        # print "f", frequency
-        # print("This is the frequency: " + str(frequency))
+         print "v", volume
+         print "f", frequency
+         print("This is the frequency: " + str(frequency))
 
-        return volume
+        #return volume
 
     handler.start_stream(callback_function=callback)
 
