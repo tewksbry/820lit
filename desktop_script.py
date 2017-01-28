@@ -47,6 +47,9 @@ def main():
         # Pattern
         cmd_queue.put(["-p", params[u'PatternID']])
 
+        # Display
+        cmd_queue.put(["-d", params[u'DisplayID']])
+
         # Brightness
         cmd_queue.put(["-b", params[u'brightness']])
 
@@ -57,7 +60,16 @@ def main():
         cmd_queue.put(["-y", params[u'cycleSpeed']])
 
         # Fade amount
-        cmd_queue.put(["-a", params[u'Fade']])
+        cmd_queue.put(["-a", params[u'fade']])
+
+        # Cutoff amount
+        cmd_queue.put(["-c", params[u'cutoff']])
+
+        # Dim center
+        cmd_queue.put(["-s", params[u'dimcenter']])
+
+        # Bright Edges
+        cmd_queue.put(["-e", params[u'brightedges']])
 
     def setParam(key, value):
         if key not in param_dict or param_dict[key] != value:
@@ -122,7 +134,7 @@ def main():
         passParam(ser, 'f', normalize_frequency(frequency))
         checkForInput()
         unirest.get(url, callback=request_callback)
-        # ser.reset_output_buffer()
+        ser.reset_output_buffer()
         return volume
 
     commands = threading.Thread(target=command, args=(cmd_queue,))
