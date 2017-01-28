@@ -1,5 +1,6 @@
 #include <Adafruit_NeoPixel.h>
 
+
 #define PIN 6
 #define NUM_PIXELS 240
 
@@ -40,6 +41,7 @@ typedef enum {
   MiddleOutFill,
   Strobe,
   Cycle,
+  Ball
 } Display_type;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ800);
@@ -58,7 +60,7 @@ Display_type display_t = Cycle;
 COLOR singleLight{0, 0, 0, 0};
 int cycle_index = 0;
 int cycle_length = 5000;
- 
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -85,7 +87,7 @@ bool handleSerial(){
   char character;
   if (!read(character) || character != ':') { return false; }
   if (!read(character)) { return false; }
-  
+
   switch(character) {
     case Volume:
       if (!read(character)) { return false; }
@@ -118,13 +120,13 @@ bool handleSerial(){
       singleLight.W = 0;
       if (!read(character)) { return false; }
       singleLight.R = character;
-      
+
       if (!read(character)) { return false; }
       singleLight.G = character;
-      
+
       if (!read(character)) { return false; }
       singleLight.B = character;
-      
+
       if (!read(character)) { return false; }
       singleLight.W = character;
       break;
@@ -149,7 +151,7 @@ bool handleSerial(){
 }
 
 //HELPER FUNCTIONS
- 
+
 uint32_t colorAsInt(const COLOR &c){
   return ((uint32_t)c.W << 24) | ((uint32_t)c.R << 16) | ((uint32_t)c.G <<  8) | c.B;
 }
@@ -193,10 +195,10 @@ COLOR rainbowPalette(int i, int len){
 COLOR USCPalette(int i, int len){
   len = 20;
   i = i % len;
-  
+
   COLOR r{255, 0, 0, 0};
   COLOR y{255, 70, 0, 0};
-  
+
   if (i < len/2){
     return r;
   }else{
@@ -284,7 +286,7 @@ void middleOutPattern(){
     }
     strip.setPixelColor(middle_pixel + i, colorAsInt(c));
     strip.setPixelColor(middle_pixel - i - 1, colorAsInt(c));
-    
+
     if ( i >= spillover_start){
       uint8_t spillover = i - spillover_start;
       strip.setPixelColor(NUM_PIXELS - spillover - 1, colorAsInt(c));
@@ -304,9 +306,29 @@ void strobe(){
   if (strip.getPixelColor(0)){
     strip.clear();
     return;
-    
+
   }
   fillPalette();
+}
+int position = NUM_PIXELS / 2;
+int direction = 1;
+COLOR ball[22];
+COLOR light{200,50,0,0};
+for(int i = 1; i < 21;i++){
+  ball[i] = light;
+}
+ball[0] = {0,0,0,0};
+ball[21] = {0,0,0,0};
+
+void ball(){
+  delay(5);
+  if(position > 220 || position < 20){
+    direction*=-1;
+  }
+  position+=direction;
+  for(int i = position-11; i < position-11+22; i++){
+    strip.setPixelColor(i,colorAsInt(ball[i]));
+  }
 }
 
 void displayPattern(){
@@ -330,8 +352,11 @@ void displayPattern(){
         cycle_index = 0;
       }
       break;
+    case Ball:
+      ball()
   }
 }
+
 
 void loop() {
   Serial.println('*');
