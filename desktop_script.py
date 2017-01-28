@@ -5,6 +5,8 @@ import time
 import sys
 import Queue
 import threading
+import unirest
+import json
 
 
 def normalize_frequency(f):
@@ -36,34 +38,58 @@ def main():
     handler = soundHandler()
     cmd_queue = Queue.Queue()
     cmd_dict = {}
+    param_dict = {}
+    url = "https://sound-visualizer-6443f.firebaseio.com/.json"
+
+    def request_callback(response):
+        params = json.loads(response.raw_body)
+
+        # Pattern
+        cmd_queue.put(["-p", params[u'PatternID']])
+
+        # Brightness
+        cmd_queue.put(["-b", params[u'brightness']])
+
+        # Light color
+        cmd_queue.put(["-l", params[u'R'], params[u'G'], params[u'B'], params[u'W']])
+
+        # Cycle speed
+        cmd_queue.put(["-y", params[u'cycleSpeed']])
+
+        # Fade amount
+        cmd_queue.put(["-a", params[u'Fade']])
+
+    def setParam(key, value):
+        if key not in param_dict or param_dict[key] != value:
+            print "Updating parameters"
+            passParam(ser, key, *value)
+            param_dict[key] = value
+            print "New parameters:", param_dict
 
     def checkForInput():
         while(not cmd_queue.empty()):
-            cmd = cmd_queue.get()
-            if len(cmd) < 1:
-                continue
-            args = cmd.split()
+            args = cmd_queue.get()
             cmd_dict[args[0]] = args[1:]
 
         for key, value in cmd_dict.iteritems():
             if key == '-p' or key == "--palette":
-                passParam(ser, 'p', int(value[0]))
+                setParam('p', [int(value[0])])
             elif key == '-a' or key == '--fade':
-                passParam(ser, 'a', int(float(value[0]) * 100))
+                setParam('a', [int(float(value[0]) * 100)])
             elif key == '-c' or key == '--cutoff':
-                passParam(ser, 'c', int(float(value[0]) * 100))
+                setParam('c', [int(float(value[0]) * 100)])
             elif key == '-d' or key == '--display':
-                passParam(ser, 'd', int(value[0]))
+                setParam('d', [int(value[0])])
             elif key == '-l' or key == '--light':
-                passParam(ser, 'l', *map(int, value))
+                setParam('l', map(int, value))
             elif key == '-b' or key == '--brightness':
-                passParam(ser, 'b', int(value[0]))
+                setParam('b', [int(value[0])])
             elif key == '-s' or key == '--dimcenter':
-                passParam(ser, 's', int(value[0]))
+                setParam('s', [int(value[0])])
             elif key == '-e' or key == '--brightedges':
-                passParam(ser, 'e', int(value[0]))
+                setParam('e', [int(value[0])])
             elif key == '-y' or key == '--cyclespeed':
-                passParam(ser, 'y', int(value[0]))
+                setParam('y', [int(value[0])])
             elif key == '-exit':
                 ser.close()
                 sys.exit(0)
@@ -85,7 +111,8 @@ def main():
     def command(queue):
         while (True):
             inp = raw_input()
-            queue.put(inp)
+            if len(inp) > 0:
+                queue.put(inp.split())
             if inp == "-exit":
                 break
 
@@ -94,11 +121,13 @@ def main():
         passParam(ser, 'v', volume)
         passParam(ser, 'f', normalize_frequency(frequency))
         checkForInput()
+        unirest.get(url, callback=request_callback)
         # ser.reset_output_buffer()
         return volume
 
     commands = threading.Thread(target=command, args=(cmd_queue,))
     commands.start()
+
     handler.start_stream(callback_function=new_pattern)
 
 

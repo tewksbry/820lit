@@ -219,7 +219,7 @@ COLOR moodPalette(int i, int len){
 
 COLOR grayscalePalette(int i, int len){
   i = normalizeIndex(i, len, 255);
-  return COLOR{0, 0, 0, (uint8_t)(i+1)};
+  return COLOR{(uint8_t)(i+1), (uint8_t)(i+1), (uint8_t)(i+1), (uint8_t)(i+1)};
 }
 
 
