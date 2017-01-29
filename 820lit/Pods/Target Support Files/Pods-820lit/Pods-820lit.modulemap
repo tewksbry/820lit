@@ -1,0 +1,6 @@
+framework module Pods_820lit {
+  umbrella header "Pods-820lit-umbrella.h"
+
+  export *
+  module * { export * }
+}

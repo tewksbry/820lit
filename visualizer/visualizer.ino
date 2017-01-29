@@ -24,6 +24,12 @@ typedef struct{
   uint8_t W;
 } COLOR;
 
+typedef struct{
+  uint8_t Pos;
+  uint8_t V;
+  COLOR color;
+} BALL;
+
 typedef enum {
   SingleLight = 0,
   Rainbow,
@@ -40,6 +46,7 @@ typedef enum {
   MiddleOutFill,
   Strobe,
   Cycle,
+  MiddleOutWHITE,
 } Display_type;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ800);
@@ -58,7 +65,10 @@ Display_type display_t = Cycle;
 COLOR singleLight{0, 0, 0, 0};
 int cycle_index = 0;
 int cycle_length = 5000;
- 
+BALL balls[10];
+
+
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -219,7 +229,7 @@ COLOR moodPalette(int i, int len){
 
 COLOR grayscalePalette(int i, int len){
   i = normalizeIndex(i, len, 255);
-  return COLOR{0, 0, 0, (uint8_t)(i+1)};
+  return COLOR{(uint8_t)(i+1), (uint8_t)(i+1), (uint8_t)(i+1), (uint8_t)(i+1)};
 }
 
 
@@ -259,6 +269,7 @@ void middleOutPattern(){
   uint8_t range_size = middle_pixel*cutoff;
   uint8_t active_range = range_size*0.01*volume;
   uint8_t spillover_start = 2 * range_size - middle_pixel;
+  uint8_t startwhite = 80;
 
   for (int i = active_range; i < middle_pixel; i++){
     COLOR c;
@@ -281,6 +292,12 @@ void middleOutPattern(){
     }
     if (dim_center){
       dim(c, (float)(i+1)/(range_size));
+    }
+    if (display_t == MiddleOutWHITE && i >= startwhite){
+      c.R = 255;
+      c.G = 255;
+      c.B = 255;
+      c.W = 255;
     }
     strip.setPixelColor(middle_pixel + i, colorAsInt(c));
     strip.setPixelColor(middle_pixel - i - 1, colorAsInt(c));
@@ -309,12 +326,18 @@ void strobe(){
   fillPalette();
 }
 
+void bounce(){
+  
+  
+}
+
 void displayPattern(){
   switch (display_t){
     case Fill:
       fillPalette();
       break;
     case MiddleOut:
+    case MiddleOutWHITE:
     case MiddleOutFill:
       middleOutPattern();
       break;

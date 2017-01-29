@@ -69,7 +69,7 @@ class soundHandler(object):
         """Private function used to interface with pyAudio"""
         audio_data = np.fromstring(in_data, dtype=np.int16)
 
-        #if int(frame_count) % 2 == 0:
+        # if int(frame_count) % 2 == 0:
         #   url = "https://sound-visualizer-6443f.firebaseio.com/PatternID.json"
         #    unirest.get(url, callback=self.__update_curr_pattern)
 
@@ -132,11 +132,11 @@ def main():
     handler = soundHandler()
 
     def callback(volume, frequency, pattern):
-         print "v", volume
-         print "f", frequency
-         print("This is the frequency: " + str(frequency))
+        print "v", volume
+        print "f", frequency
+        print("This is the frequency: " + str(frequency))
 
-        #return volume
+        # return volume
 
     handler.start_stream(callback_function=callback)
 
