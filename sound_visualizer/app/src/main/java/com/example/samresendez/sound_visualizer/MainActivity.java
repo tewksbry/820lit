@@ -37,12 +37,42 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        //Set up database connections:
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e("Stuff",dataSnapshot.toString());
+                try {
+                    int bright = (int) (dataSnapshot.child("brightness").getValue(Integer.class) / 2.55);
+                    int cycleSpeed = (int) (255 - dataSnapshot.child("cycleSpeed").getValue(Integer.class) / 2.55);
+                    int white = (int)(dataSnapshot.child("W").getValue(Integer.class) / 2.55);
+
+                    ((SeekBar) findViewById(R.id.cycle_bar)).setProgress(cycleSpeed);
+                    ((SeekBar) findViewById(R.id.brightness_bar)).setProgress(bright);
+                    ((SeekBar) findViewById(R.id.white_bar)).setProgress(white);
+                }
+                catch(Exception e) {
+                    Log.e("onData",e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        mDatabase.addValueEventListener(listener);
         SeekBar bar = (SeekBar) findViewById(R.id.brightness_bar);
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int val = (int)(i*2.55);
-                mDatabase.child("brightness").setValue(val);
+                if(b) {
+                    int val = (int) (i * 2.55);
+                    mDatabase.child("brightness").setValue(val);
+                }
 
             }
 
@@ -154,9 +184,10 @@ public class MainActivity extends AppCompatActivity {
         cycle_button.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-                i = (int)(i * 2.55);
-                mDatabase.child("cycleSpeed").setValue(255 - i);
+                if(b) {
+                    i = (int) (i * 2.55);
+                    mDatabase.child("cycleSpeed").setValue(255 - i);
+                }
             }
 
             @Override
@@ -173,7 +204,9 @@ public class MainActivity extends AppCompatActivity {
         white_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                mDatabase.child("W").setValue((int)(2.55*i));
+                if(b) {
+                    mDatabase.child("W").setValue((int) (2.55 * i));
+                }
             }
 
             @Override
