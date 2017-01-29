@@ -30,8 +30,8 @@ class soundHandler(object):
         self.__RATE = rate
         self.__CHUNK = chunk
         self.__max_output = 100
-        self.__dependency = -0.0018
-        self.__scale_factor = 8
+        self.__dependency = -0.00099
+        self.__scale_factor = 50
         self.stream = None
         self.__currPattern = 0
         self.__isActive = False
@@ -47,8 +47,8 @@ class soundHandler(object):
     def __sigmoid(self, x):
         """Math function which maps values to set volume scale"""
 
-        volume =  round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x))) - 12
-        if volume < 0:
+        volume =  round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
+        if int(volume) == 2:
             volume = 0
         return volume
 
@@ -75,9 +75,12 @@ class soundHandler(object):
         # if int(frame_count) % 2 == 0:
         #   url = "https://sound-visualizer-6443f.firebaseio.com/PatternID.json"
         #    unirest.get(url, callback=self.__update_curr_pattern)
-
+        raw_val = max(audio_data) - 25
+        if raw_val < 0:
+            raw_val = 0
+            
         # do processing here
-        last_volume = self.__sigmoid(max(audio_data))
+        last_volume = self.__sigmoid(raw_val)
         print "Volume input: " + str(last_volume)
         # Do the calculations
         fftData = abs(np.fft.rfft(audio_data)) ** 2
