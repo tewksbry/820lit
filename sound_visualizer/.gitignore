@@ -1,12 +1,3 @@
-*.pyc
-build
-dist
-env
-.idea
-
-
-
-.bat
 *.iml
 .gradle
 /local.properties

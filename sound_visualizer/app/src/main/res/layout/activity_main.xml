@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.samresendez.sound_visualizer.MainActivity">
+
+
+
+    <TextView
+        android:id="@+id/block"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <NumberPicker
+        android:layout_marginRight="20dp"
+        android:id="@+id/binaryButton"
+        android:layout_toLeftOf="@id/block"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></NumberPicker>
+    <NumberPicker
+        android:id = "@+id/display_picker"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/block"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></NumberPicker>
+
+    <Button
+        android:text="Set Color"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/select_color"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/binaryButton"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:text = "Set Light Strip Brightness"
+        android:id="@+id/slider_descriptor"
+        android:layout_below="@id/select_color"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/brightness_bar"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/slider_descriptor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/brightness_bar"
+        android:layout_marginTop="20dp"
+        android:id="@+id/cycle_descriptor"
+        android:text="Set Cycle Speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/cycle_bar"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/cycle_descriptor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/cycle_bar"
+        android:text = "Set White LED"
+        android:layout_centerHorizontal="true"
+        android:id = "@+id/white_set"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/white_bar"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/white_set"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
