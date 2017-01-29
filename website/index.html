@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title> 820 LIT </title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.0/css/bootstrap-slider.min.css">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-1">
+				<div class="checkbox">
+					<label>
+            <input id="dimCenter" type="checkbox" data-toggle="toggle">
+            Dim Center
+          </label>
+				</div>
+			</div>
+			<div class="col-md-1">
+				<div class="checkbox">
+					<label>
+            <input id="brightEdges" type="checkbox" data-toggle="toggle">
+            Bright Edges
+          </label>
+				</div>
+			</div>
+      <div class="col-md-1">
+        <div class="checkbox">
+          <label>
+            <input id="on" type="checkbox" data-toggle="toggle">
+            Power
+          </label>
+        </div>
+      </div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<p> RED </p>
+				<input id="redSlider" data-slider-id='redSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+			</div>
+			<div class="col-md-4">
+				<p> GREEN </p>
+				<input id="greenSlider" data-slider-id='greenSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+			</div>
+			<div class="col-md-4">
+				<p> BLUE </p>
+				<input id="blueSlider" data-slider-id='blueSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+			</div>
+			<div class="col-md-4">
+				<p> White </p>
+				<input id="whiteSlider" data-slider-id='whiteSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+			</div>
+			<div class="col-md-4">
+				<p> Brightness </p>
+				<input id="brightSlider" data-slider-id='brightSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<p> Cutoff </p>
+				<input id="cutoffSlider" data-slider-id='cutoffSlider' type="text" data-slider-handle="custom" />
+			</div>
+			<div class="col-md-4">
+				<p> Fade </p>
+				<input id="fadeSlider" data-slider-id='fadeSlider' type="text" data-slider-handle="custom" />
+			</div>
+			<div class="col-md-4">
+				<p> Cycle </p>
+				<input id="cycleSlider" data-slider-id='cycleSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+			</div>
+		</div>
+		<div class="row">
+      <p> Display Selector </p>
+			<div class="btn-group" data-toggle="display" >
+				<label class="btn btn-primary">
+          <input type="radio" name="display" value="0"  id="dis0"> Fill
+        </label>
+				<label class="btn btn-primary">
+          <input type="radio" name="display" value="1" id="dis1"> MiddleOut
+        </label>
+				<label class="btn btn-primary">
+          <input type="radio" name="display" value="2" id="dis2"> MiddleOutFill
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="display" value="3" id="dis3"> Strobe
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="display" value="4" id="dis4"> Cycle
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="display" value="5" id="dis5"> Middle Out White
+        </label>
+			</div>
+		</div>
+    <div class="row">
+      <p> Pattern Selector </p>
+			<div class="btn-group" data-toggle="pattern" >
+				<label class="btn btn-primary">
+          <input type="radio" name="pattern" value="0" id="pat0"> Single Light
+        </label>
+				<label class="btn btn-primary">
+          <input type="radio" name="pattern" value="1" id="pat1"> Rainbow
+        </label>
+				<label class="btn btn-primary">
+          <input type="radio" name="pattern" value="2" id="pat2"> Random
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="pattern" value="3" id="pat3"> Random Bright
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="pattern" value="4" id="pat4"> Grayscale
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="pattern" value="5" id="pat5"> USC
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="pattern" value="6" id="pat6"> Mood
+        </label>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
+<script>
+	// Initialize Firebase
+	var config = {
+		apiKey: "AIzaSyCw2VULu88Y6GFyIhA3uX3xH0ELNyGZRX8",
+		authDomain: "sound-visualizer-6443f.firebaseapp.com",
+		databaseURL: "https://sound-visualizer-6443f.firebaseio.com",
+		storageBucket: "sound-visualizer-6443f.appspot.com",
+		messagingSenderId: "990692069532"
+	};
+	firebase.initializeApp(config);
+</script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.0/bootstrap-slider.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+</html>
