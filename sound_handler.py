@@ -47,7 +47,10 @@ class soundHandler(object):
     def __sigmoid(self, x):
         """Math function which maps values to set volume scale"""
 
-        return round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
+        volume =  round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x))) - 12
+        if volume < 0:
+            volume = 0
+        return volume
 
     def __update_curr_pattern(self, response):
         if response.raw_body.isdigit():
@@ -75,7 +78,7 @@ class soundHandler(object):
 
         # do processing here
         last_volume = self.__sigmoid(max(audio_data))
-
+        print "Volume input: " + str(last_volume)
         # Do the calculations
         fftData = abs(np.fft.rfft(audio_data)) ** 2
         which = fftData[1:].argmax() + 1
@@ -132,9 +135,7 @@ def main():
     handler = soundHandler()
 
     def callback(volume, frequency, pattern):
-        print "v", volume
-        print "f", frequency
-        print("This is the frequency: " + str(frequency))
+        pass
 
         # return volume
 
