@@ -3,5 +3,5 @@ build
 dist
 env
 .idea
-node_modules
-.sass-cache
+website/node_modules
+.website/sass-cache
