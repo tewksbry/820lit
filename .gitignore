@@ -4,4 +4,4 @@ dist
 env
 .idea
 website/node_modules
-.website/sass-cache
+website/.sass-cache
