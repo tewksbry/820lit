@@ -1,0 +1,26 @@
+body {
+  background: #EEE; }
+
+.container {
+  padding-left: 1em;
+  padding-right: 1em; }
+
+#redSlider .slider-selection {
+  background: #FF8282; }
+#redSlider .slider-handle {
+  background: red; }
+
+#greenSlider .slider-selection {
+  background: #428041; }
+#greenSlider .slider-handle {
+  background: green; }
+
+#blueSlider .slider-selection {
+  background: #8283FF; }
+#blueSlider .slider-handle {
+  border-bottom-color: blue; }
+
+#whiteSlider .slider-track-high {
+  background: #DDD; }
+#whiteSlider .slider-handle {
+  background: #FFF; }

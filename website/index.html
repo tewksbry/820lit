@@ -12,116 +12,143 @@
 </head>
 
 <body>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-1">
-				<div class="checkbox">
-					<label>
+	<div id="password" class="container">
+		<div class="input-group">
+			<span class="input-group-addon" id="password-input">@</span>
+			<input name="password" type="text" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
+		</div>
+	</div>
+	<div id="controller" class="container hidden">
+		<div class="container">
+			<ul class="nav nav-tabs text-center">
+				<li class="active">
+					<a href="#general" data-toggle="tab">General</a>
+				</li>
+				<li><a href="#advanced" data-toggle="tab">Advanced</a>
+				</li>
+				<li><a href="#pattern" data-toggle="tab">Pattern</a>
+				</li>
+				<li><a href="#display" data-toggle="tab">Display</a>
+				</li>
+			</ul>
+			<div class="tab-content clearfix">
+				<div class="tab-pane active" id="general">
+					<div class="row">
+						<div class="col-md-1">
+							<div class="checkbox">
+								<label>
             <input id="dimCenter" type="checkbox" data-toggle="toggle">
             Dim Center
           </label>
-				</div>
-			</div>
-			<div class="col-md-1">
-				<div class="checkbox">
-					<label>
+							</div>
+						</div>
+						<div class="col-md-1">
+							<div class="checkbox">
+								<label>
             <input id="brightEdges" type="checkbox" data-toggle="toggle">
             Bright Edges
           </label>
-				</div>
-			</div>
-      <div class="col-md-1">
-        <div class="checkbox">
-          <label>
+							</div>
+						</div>
+						<div class="col-md-1">
+							<div class="checkbox">
+								<label>
             <input id="on" type="checkbox" data-toggle="toggle">
             Power
           </label>
-        </div>
-      </div>
-		</div>
-		<div class="row">
-			<div class="col-md-4">
-				<p> RED </p>
-				<input id="redSlider" data-slider-id='redSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
-			</div>
-			<div class="col-md-4">
-				<p> GREEN </p>
-				<input id="greenSlider" data-slider-id='greenSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
-			</div>
-			<div class="col-md-4">
-				<p> BLUE </p>
-				<input id="blueSlider" data-slider-id='blueSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
-			</div>
-			<div class="col-md-4">
-				<p> White </p>
-				<input id="whiteSlider" data-slider-id='whiteSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
-			</div>
-			<div class="col-md-4">
-				<p> Brightness </p>
-				<input id="brightSlider" data-slider-id='brightSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-4">
-				<p> Cutoff </p>
-				<input id="cutoffSlider" data-slider-id='cutoffSlider' type="text" data-slider-handle="custom" />
-			</div>
-			<div class="col-md-4">
-				<p> Fade </p>
-				<input id="fadeSlider" data-slider-id='fadeSlider' type="text" data-slider-handle="custom" />
-			</div>
-			<div class="col-md-4">
-				<p> Cycle </p>
-				<input id="cycleSlider" data-slider-id='cycleSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
-			</div>
-		</div>
-		<div class="row">
-      <p> Display Selector </p>
-			<div class="btn-group" data-toggle="display" >
-				<label class="btn btn-primary">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<p> RED </p>
+							<input id="redSlider" data-slider-id='redSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-handle="square" />
+						</div>
+						<div class="col-md-4">
+							<p> GREEN </p>
+							<input id="greenSlider" data-slider-id='greenSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-handle="triangle" />
+						</div>
+						<div class="col-md-4">
+							<p> BLUE </p>
+							<input id="blueSlider" data-slider-id='blueSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-handle="round" />
+						</div>
+						<div class="col-md-4">
+							<p> White </p>
+							<input id="whiteSlider" data-slider-id='whiteSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+						</div>
+						<div class="col-md-4">
+							<p> Brightness </p>
+							<input id="brightSlider" data-slider-id='brightSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane" id="advanced">
+					<div class="row">
+						<div class="col-md-4">
+							<p> Cutoff </p>
+							<input id="cutoffSlider" data-slider-id='cutoffSlider' type="text" data-slider-handle="custom" />
+						</div>
+						<div class="col-md-4">
+							<p> Fade </p>
+							<input id="fadeSlider" data-slider-id='fadeSlider' type="text" data-slider-handle="custom" />
+						</div>
+						<div class="col-md-4">
+							<p> Cycle </p>
+							<input id="cycleSlider" data-slider-id='cycleSlider' type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="14" />
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane" id="display">
+					<div class="row">
+						<div class="btn-group btn-group-justified" data-toggle="display">
+							<label class="btn btn-primary">
           <input type="radio" name="display" value="0"  id="dis0"> Fill
         </label>
-				<label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="display" value="1" id="dis1"> MiddleOut
         </label>
-				<label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="display" value="2" id="dis2"> MiddleOutFill
         </label>
-        <label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="display" value="3" id="dis3"> Strobe
         </label>
-        <label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="display" value="4" id="dis4"> Cycle
         </label>
-        <label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="display" value="5" id="dis5"> Middle Out White
         </label>
-			</div>
-		</div>
-    <div class="row">
-      <p> Pattern Selector </p>
-			<div class="btn-group" data-toggle="pattern" >
-				<label class="btn btn-primary">
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane" id="pattern">
+					<div class="row">
+						<div class="btn-group" data-toggle="pattern">
+							<label class="btn btn-primary">
           <input type="radio" name="pattern" value="0" id="pat0"> Single Light
         </label>
-				<label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="pattern" value="1" id="pat1"> Rainbow
         </label>
-				<label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="pattern" value="2" id="pat2"> Random
         </label>
-        <label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="pattern" value="3" id="pat3"> Random Bright
         </label>
-        <label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="pattern" value="4" id="pat4"> Grayscale
         </label>
-        <label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="pattern" value="5" id="pat5"> USC
         </label>
-        <label class="btn btn-primary">
+							<label class="btn btn-primary">
           <input type="radio" name="pattern" value="6" id="pat6"> Mood
         </label>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

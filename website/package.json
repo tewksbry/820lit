@@ -4,6 +4,7 @@
   "description": "ITS LIT",
   "main": "",
   "scripts": {
+    "start": "grunt server",
     "test": "echo \"We don't need no tests\" && exit 1",
     "deploy": "npm run gh-pages",
     "gh-pages": "gh-pages -b gh-pages"

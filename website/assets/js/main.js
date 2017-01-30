@@ -1,4 +1,5 @@
 var database = firebase.database();
+var password = "820";
 
 database.ref("/").on('value', function(snapshot) {
 	var val = snapshot.val();
@@ -11,12 +12,18 @@ database.ref("/").on('value', function(snapshot) {
 	cutoff.slider('setValue', val.cutoff);
 	cycle.slider('setValue', val.cycleSpeed);
 	fade.slider('setValue', val.fade);
-	dim.bootstrapToggle(val.dimcenter === 1? 'on' : 'off');
+	dim.bootstrapToggle(val.dimcenter === 1 ? 'on' : 'off');
 	edge.bootstrapToggle(val.brightedges === 1 ? 'on' : 'off');
 	on.bootstrapToggle(val.on === 1 ? 'on' : 'off');
 	$("#pat" + val.PatternID).prop('checked', true);
 	$("#dis" + val.DisplayID).prop('checked', true);
 
+});
+$("input[name=password]").on("keyup", function() {
+	if (this.value == password) {
+		$("#password").addClass("hidden");
+		$("#controller").removeClass("hidden");
+	}
 });
 
 var setData = function(obj) {
