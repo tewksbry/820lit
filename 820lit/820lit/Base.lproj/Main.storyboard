@@ -27,42 +27,107 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="177" id="Wd9-lT-BX4"/>
                                 </constraints>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="xCW-AI-JYi"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="gq3-ZJ-TGE"/>
+                                </connections>
                             </pickerView>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ajz-6p-TgJ">
                                 <rect key="frame" x="254.5" y="205" width="51" height="31"/>
+                                <connections>
+                                    <action selector="switchChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="N96-z3-wl9"/>
+                                </connections>
                             </switch>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="7ga-Xg-pma">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="7ga-Xg-pma">
                                 <rect key="frame" x="123.5" y="244" width="237.5" height="31"/>
+                                <color key="minimumTrackTintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="thumbTintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpInside" id="axj-D1-qpq"/>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="kbW-jG-oY2"/>
+                                    <action selector="sliderChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="L3R-rg-DVj"/>
+                                </connections>
                             </slider>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="lY9-yj-VGd">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="lY9-yj-VGd">
                                 <rect key="frame" x="123" y="282" width="238" height="31"/>
+                                <color key="minimumTrackTintColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="thumbTintColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpInside" id="90f-W4-L16"/>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="wUX-qw-bT0"/>
+                                    <action selector="sliderChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="lXN-ma-0KJ"/>
+                                </connections>
                             </slider>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="EbR-8L-SPl">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="EbR-8L-SPl">
                                 <rect key="frame" x="123" y="320" width="238" height="31"/>
+                                <color key="minimumTrackTintColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="thumbTintColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZPV-Pv-rZw"/>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="qos-Bt-EU6"/>
+                                    <action selector="sliderChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="gDh-ar-G6m"/>
+                                </connections>
                             </slider>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="U51-u5-sR8">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="U51-u5-sR8">
                                 <rect key="frame" x="123" y="358" width="238" height="31"/>
+                                <color key="minimumTrackTintColor" red="0.78431372549019607" green="0.78431372549019607" blue="0.78431372549019607" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="thumbTintColor" red="0.78431372549019607" green="0.78431372549019607" blue="0.78431372549019607" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="893-Rm-bLJ"/>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpInside" id="r8n-cT-vB7"/>
+                                    <action selector="sliderChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="TCJ-gW-o5t"/>
+                                </connections>
                             </slider>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="RfD-hj-ju1">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="255" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="RfD-hj-ju1">
                                 <rect key="frame" x="123" y="396" width="238" height="31"/>
+                                <connections>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="4vk-IZ-QqT"/>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpInside" id="IdO-bZ-i5j"/>
+                                    <action selector="sliderChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="nt7-jO-Yv5"/>
+                                </connections>
                             </slider>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="VaA-XY-BTY">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="1" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="VaA-XY-BTY">
                                 <rect key="frame" x="123" y="434" width="238" height="31"/>
+                                <connections>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="0mM-4h-59Q"/>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpInside" id="GXq-wG-CRj"/>
+                                    <action selector="sliderChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="73V-hY-nzY"/>
+                                </connections>
                             </slider>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="pd1-eT-AhG">
                                 <rect key="frame" x="123" y="472" width="238" height="31"/>
+                                <connections>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="F7M-bv-X5i"/>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mnG-tK-LSU"/>
+                                    <action selector="sliderChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="OEa-MF-Abd"/>
+                                </connections>
                             </slider>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="nBI-o7-fpO">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="nBI-o7-fpO">
                                 <rect key="frame" x="123" y="510" width="238" height="31"/>
+                                <connections>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="8Fl-be-2Oz"/>
+                                    <action selector="changesEnded:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vQL-tw-yUl"/>
+                                    <action selector="sliderChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="Kzd-vk-agU"/>
+                                </connections>
                             </slider>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SYA-oI-Tl0">
                                 <rect key="frame" x="127" y="548" width="51" height="31"/>
+                                <connections>
+                                    <action selector="switchChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="fYF-9S-ch3"/>
+                                </connections>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZF0-wZ-glf">
                                 <rect key="frame" x="310" y="548" width="51" height="31"/>
+                                <connections>
+                                    <action selector="switchChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="fXn-ZB-Rgm"/>
+                                </connections>
                             </switch>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JLi-Rd-Smr">
                                 <rect key="frame" x="199" y="20" width="160" height="177"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="0gF-tN-Tbd"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="60k-6o-GAh"/>
+                                </connections>
                             </pickerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="R" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sOL-A3-sRR">
                                 <rect key="frame" x="16" y="249" width="11" height="21"/>
@@ -195,6 +260,21 @@
                             <constraint firstItem="gkc-WL-BA0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="z4g-Mi-lbU"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="bSlider" destination="EbR-8L-SPl" id="KVa-iA-KZ5"/>
+                        <outlet property="brightEdgesSwitch" destination="ZF0-wZ-glf" id="jfB-ey-Nv4"/>
+                        <outlet property="brightnessSlider" destination="RfD-hj-ju1" id="cE1-UO-6ks"/>
+                        <outlet property="cutoffSlider" destination="nBI-o7-fpO" id="o07-EA-Zh3"/>
+                        <outlet property="cycleSpeedSlider" destination="VaA-XY-BTY" id="vpl-3e-btB"/>
+                        <outlet property="dimCenterSwitch" destination="SYA-oI-Tl0" id="nOZ-mG-Zbo"/>
+                        <outlet property="displayPicker" destination="JLi-Rd-Smr" id="bpe-Fx-VNa"/>
+                        <outlet property="fadeSlider" destination="pd1-eT-AhG" id="C0u-xb-xAV"/>
+                        <outlet property="gSlider" destination="lY9-yj-VGd" id="nQc-AE-KFU"/>
+                        <outlet property="onSwitch" destination="ajz-6p-TgJ" id="GDr-hk-rlP"/>
+                        <outlet property="patternPicker" destination="bPt-f5-iDg" id="fNj-NA-BP2"/>
+                        <outlet property="rSlider" destination="7ga-Xg-pma" id="azf-OF-XTp"/>
+                        <outlet property="wSlider" destination="U51-u5-sR8" id="Uou-la-55b"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
