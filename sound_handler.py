@@ -4,8 +4,6 @@ import pyaudio
 
 import numpy as np
 import math
-import Queue
-import unirest
 
 
 """
@@ -47,7 +45,7 @@ class soundHandler(object):
     def __sigmoid(self, x):
         """Math function which maps values to set volume scale"""
 
-        volume =  round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
+        volume = round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
         if int(volume) == 2:
             volume = 0
         return volume
@@ -78,7 +76,7 @@ class soundHandler(object):
         raw_val = max(audio_data) - 25
         if raw_val < 0:
             raw_val = 0
-            
+
         # do processing here
         last_volume = self.__sigmoid(raw_val)
         print "Volume input: " + str(last_volume)
