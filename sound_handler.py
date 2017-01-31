@@ -79,7 +79,7 @@ class soundHandler(object):
 
         # do processing here
         last_volume = self.__sigmoid(raw_val)
-        print "Volume input: " + str(last_volume)
+        print("Volume input: " + str(last_volume))
         # Do the calculations
         fftData = abs(np.fft.rfft(audio_data)) ** 2
         which = fftData[1:].argmax() + 1

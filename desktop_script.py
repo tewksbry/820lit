@@ -3,7 +3,7 @@ import serial
 import struct
 import time
 import sys
-import Queue
+import queue
 import threading
 import pyrebase
 
@@ -35,7 +35,7 @@ def main():
     ser = None
     ser = serial.Serial(port, 115200)
     handler = soundHandler()
-    cmd_queue = Queue.Queue()
+    cmd_queue = queue.Queue()
     cmd_dict = {}
     param_dict = {}
 
@@ -87,10 +87,10 @@ def main():
 
     def setParam(key, value):
         if key not in param_dict or param_dict[key] != value:
-            print "Updating parameters"
+            print("Updating parameters")
             passParam(ser, key, *value)
             param_dict[key] = value
-            print "New parameters:", param_dict
+            print("New parameters:", param_dict)
 
     def checkForInput():
         while(not cmd_queue.empty()):
@@ -120,18 +120,18 @@ def main():
                 ser.close()
                 sys.exit(0)
             elif key == '-h' or key == '--help':
-                print "Availible commands:"
-                print "Palette number: -p (--palette) [num]"
-                print "Display type number: -d (--display) [num]"
-                print "Fade rate: -a (--fade) [0 - 1]"
-                print "Cutoff: -c (--cutoff) [0 - 1]"
-                print "Single light color: -l (--light) [R] [G] [B] [W]"
-                print "Brightness: -b (--brightness) [0 - 255]"
-                print "Dim center: -s (--dimcenter) [0 or 1]"
-                print "Brighten edges: -e (--brightedges) [0 or 1]"
-                print "Cycle speed: -y (--cyclespeed) [1 - 255]"
+                print("Availible commands:")
+                print("Palette number: -p (--palette) [num]")
+                print("Display type number: -d (--display) [num]")
+                print("Fade rate: -a (--fade) [0 - 1]")
+                print("Cutoff: -c (--cutoff) [0 - 1]")
+                print("Single light color: -l (--light) [R] [G] [B] [W]")
+                print("Brightness: -b (--brightness) [0 - 255]")
+                print("Dim center: -s (--dimcenter) [0 or 1]")
+                print("Brighten edges: -e (--brightedges) [0 or 1]")
+                print("Cycle speed: -y (--cyclespeed) [1 - 255]")
 
-                print "Exit: -exit"
+                print("Exit: -exit")
         cmd_dict.clear()
 
     my_stream = db.stream(request_callback)
