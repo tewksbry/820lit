@@ -1,3 +1,5 @@
+# Author: Stiven Deleur
+
 from sound_handler import soundHandler
 import serial
 import struct
@@ -150,7 +152,6 @@ def main():
         passParam(ser, 'v', volume)
         passParam(ser, 'f', normalize_frequency(frequency))
         checkForInput()
-        # unirest.get(url, callback=request_callback)
         ser.reset_output_buffer()
         return volume
 
