@@ -140,7 +140,7 @@ def main():
 
     def command(queue):
         while (True):
-            inp = raw_input()
+            inp = input()
             if len(inp) > 0:
                 queue.put(inp.split())
             if inp == "-exit":
