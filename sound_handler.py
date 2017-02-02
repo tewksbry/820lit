@@ -110,6 +110,11 @@ class soundHandler(object):
         p = pyaudio.PyAudio()
         device_index = 0
         for x in range(p.get_device_count()):
+            if p.get_device_info_by_index(x)["maxInputChannels"] > 0:
+                device_index = x
+                break
+
+        for x in range(p.get_device_count()):
             if p.get_device_info_by_index(x)["name"] == u'Soundflower (2ch)':
                 device_index = x
 
