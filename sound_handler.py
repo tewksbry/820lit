@@ -14,7 +14,7 @@ soundHandler class, for Neil's IoT Thing
 class soundHandler(object):
     """pyDocs here"""
 
-    def __init__(self, channel_number=1, rate=8000, chunk=130):
+    def __init__(self, channel_number=1, rate=44100, chunk=512):
         """Initializes a soundHandler, with default values that provide 60 readings per second, scaled to output 0 - 100.
         Can be updated to set the channel_number, rate, and chunk
 
@@ -79,7 +79,7 @@ class soundHandler(object):
 
         # do processing here
         last_volume = self.__sigmoid(raw_val)
-        print("Volume input: " + str(last_volume))
+        # print("Volume input: " + str(last_volume))
         # Do the calculations
         fftData = abs(np.fft.rfft(audio_data)) ** 2
         which = fftData[1:].argmax() + 1

@@ -13,7 +13,7 @@ import pyrebase
 def normalize_frequency(f):
     if f < 0 or not f:
         return 0
-    f = 100 * f / 2000
+    f = 100 * f / 1000
     if f > 100:
         f = 100
     if f >= 0 and f <= 100:
@@ -99,7 +99,7 @@ def main():
             args = cmd_queue.get()
             cmd_dict[args[0]] = args[1:]
 
-        for key, value in cmd_dict.iteritems():
+        for key, value in cmd_dict.items():
             if key == '-p' or key == "--palette":
                 setParam('p', [int(value[0])])
             elif key == '-a' or key == '--fade':
