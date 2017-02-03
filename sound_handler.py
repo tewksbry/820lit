@@ -28,7 +28,7 @@ class soundHandler(object):
         self.__RATE = rate
         self.__CHUNK = chunk
         self.__max_output = 100
-        self.__dependency = -0.0099
+        self.__dependency = -0.0059
         self.__scale_factor = 50
         self.stream = None
         self.__currPattern = 0
@@ -70,18 +70,13 @@ class soundHandler(object):
         """Private function used to interface with pyAudio"""
         audio_data = np.fromstring(in_data, dtype=np.int16)
 
-        # if int(frame_count) % 2 == 0:
-        #   url = "https://sound-visualizer-6443f.firebaseio.com/PatternID.json"
-        #    unirest.get(url, callback=self.__update_curr_pattern)
-        print(audio_data)
         raw_val = max(audio_data) - 25
         if raw_val < 0:
             raw_val = 0
 
         # do processing here
-        print("Volume raw input: " + str(raw_val))
         last_volume = self.__sigmoid(raw_val)
-        print("Volume input: " + str(last_volume))
+
         # Do the calculations
         fftData = abs(np.fft.rfft(audio_data)) ** 2
         which = fftData[1:].argmax() + 1
@@ -112,7 +107,7 @@ class soundHandler(object):
         p = pyaudio.PyAudio()
         device_index = 0
         for x in range(p.get_device_count()):
-            if p.get_device_info_by_index(x)["maxInputChannels"] > 0:
+            if p.get_device_info_by_index(x)["maxInputChannels"] == 1:
                 device_index = x
                 break
 
