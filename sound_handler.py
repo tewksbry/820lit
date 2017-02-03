@@ -68,7 +68,7 @@ class soundHandler(object):
 
     def __callback(self, in_data, frame_count, time_info, flag):
         """Private function used to interface with pyAudio"""
-        audio_data = np.fromstring(in_data, dtype=np.int16)
+        audio_data = np.fromstring(in_data, dtype=np.int32)
 
         raw_val = max(audio_data) - 25
         if raw_val < 0:
@@ -117,7 +117,7 @@ class soundHandler(object):
             if p.get_device_info_by_index(x)["name"] == u'Soundflower (2ch)':
                 device_index = x
 
-        self.stream = p.open(format=pyaudio.paInt16,
+        self.stream = p.open(format=pyaudio.paInt32,
                              channels=self.__CHANNELS,
                              rate=self.__RATE,
                              frames_per_buffer=self.__CHUNK,
