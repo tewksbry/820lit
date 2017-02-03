@@ -52,6 +52,7 @@ def main():
     db = firebase.database()
 
     def request_callback(response):
+        print("request callback")
         params = db.get().val()
 
         # Pattern
