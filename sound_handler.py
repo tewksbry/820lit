@@ -28,7 +28,7 @@ class soundHandler(object):
         self.__RATE = rate
         self.__CHUNK = chunk
         self.__max_output = 100
-        self.__dependency = -0.0059
+        self.__dependency = -0.00029
         self.__scale_factor = 50
         self.stream = None
         self.__currPattern = 0
