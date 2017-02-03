@@ -119,7 +119,10 @@ def main():
             elif key == '-y' or key == '--cyclespeed':
                 setParam('y', [int(value[0])])
             elif key == '-exit':
+                print("Closing serial port...")
                 ser.close()
+                print("Serial port closed.")
+                print("Exiting script.")
                 sys.exit(0)
             elif key == '-h' or key == '--help':
                 print("Availible commands:")
@@ -144,15 +147,34 @@ def main():
             if len(inp) > 0:
                 queue.put(inp.split())
             if inp == "-exit":
+                print("Closing commandline stream...")
                 my_stream.close()
+                print("Commandline stream closed.")
                 break
 
     def new_pattern(volume, frequency, patt):
+        print("Waiting for go signal...")
+        print("Bytes in waiting: " + ser.in_waiting)
+        print("Bytes in waiting: " + ser.out_waiting)
         ser.readline()
+        print("Received go signal")
+        print("Bytes in waiting: " + ser.in_waiting)
+        print("Bytes in waiting: " + ser.out_waiting)
         passParam(ser, 'v', volume)
         passParam(ser, 'f', normalize_frequency(frequency))
         checkForInput()
+        print("Resetting output buffer")
+        print("Bytes in waiting: " + ser.in_waiting)
+        print("Bytes in waiting: " + ser.out_waiting)
         ser.reset_output_buffer()
+        print("Reset output buffer")
+        print("Resetting input buffer")
+        print("Bytes in waiting: " + ser.in_waiting)
+        print("Bytes in waiting: " + ser.out_waiting)
+        ser.reset_input_buffer()
+        print("Reset input buffer")
+        print("Bytes in waiting: " + ser.in_waiting)
+        print("Bytes in waiting: " + ser.out_waiting)
         return volume
 
     commands = threading.Thread(target=command, args=(cmd_queue,))

@@ -131,7 +131,9 @@ class soundHandler(object):
         while self.stream.is_active():
             self.__handle_volume_data(self.data_tuple[0], self.data_tuple[1], self.data_tuple[2])
 
+        print("Closing PyAudio Stream...")
         self.stream.close()
+        print("PyAudio stream closed.")
 
 # ----- just for testing purposes ----- #
 

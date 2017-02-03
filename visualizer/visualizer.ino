@@ -1,7 +1,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #define PIN 6
-#define NUM_PIXELS 240
+#define NUM_PIXELS 300
 
 enum Params {
   Volume = 'v',
@@ -49,7 +49,7 @@ typedef enum {
   MiddleOutWHITE,
 } Display_type;
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 // PARAMETERS
 uint8_t volume = 0;
@@ -60,9 +60,9 @@ float fade = 0.7;
 float cutoff = 1;
 bool bright_edges = true;
 bool dim_center = true;
-Palette_type palette = Mood;
-Display_type display_t = Cycle;
-COLOR singleLight{0, 0, 0, 0};
+Palette_type palette = SingleLight;
+Display_type display_t = Fill;
+COLOR singleLight{255,255,255,255};
 int cycle_index = 0;
 int cycle_length = 5000;
 BALL balls[10];

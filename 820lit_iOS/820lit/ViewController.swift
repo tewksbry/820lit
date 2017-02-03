@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseDatabase
 
-class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, HSBColorPickerDelegate {
 
     var ref: FIRDatabaseReference!
     var refHandle: UInt!
@@ -27,47 +27,55 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     @IBOutlet weak var cutoffSlider: UISlider!
     @IBOutlet weak var dimCenterSwitch: UISwitch!
     @IBOutlet weak var brightEdgesSwitch: UISwitch!
-    var lockUI = false
-
+    @IBOutlet weak var colorPicker: HSBColorPicker!
+    @IBOutlet weak var colorDisplayView: UIView!
+    
     var patterns = ["Single Color", "Rainbow", "Random", "Random Bright", "Grayscale", "USC", "Mood Lighting"]
     var displayTypes = ["Fill", "Middle Out", "Middle Out Fill", "Strobe", "Cycle", "Middle Out White"]
     
+//    func updateViews() {
+//        if patternPicker.selectedRow(inComponent: 0) != 0{
+//            rSlider.alpha = 0
+//            gSlider.alpha = 0
+//            bSlider.alpha = 0
+//            wSlider.alpha = 0
+//            colorPicker.alpha = 0
+//            colorDisplayView.alpha = 0
+//        }else{
+//            rSlider.alpha = 1
+//            gSlider.alpha = 1
+//            bSlider.alpha = 1
+//            wSlider.alpha = 1
+//            colorPicker.alpha = 1
+//            colorDisplayView.alpha = 1
+//        }
+//        
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        colorPicker.delegate = self
         ref = FIRDatabase.database().reference()
         refHandle = ref.observe(FIRDataEventType.value, with: { (snapshot) in
             let postDict = snapshot.value as? [String : AnyObject] ?? [:]
-            if self.lockUI{ return}
+            print(postDict)
+//            if self.lockUI{ return}
             self.patternPicker.selectRow(postDict["PatternID"] as! Int, inComponent: 0, animated: true)
             self.displayPicker.selectRow(postDict["DisplayID"] as! Int, inComponent: 0, animated: true)
             self.onSwitch.setOn(postDict["on"] as! Int == 1, animated: true)
-            if Int(self.rSlider.value) != postDict["R"] as! Int{
-                self.rSlider.setValue(postDict["R"] as! Float, animated: true)
-            }
-            if Int(self.gSlider.value) != postDict["G"] as! Int{
-                self.gSlider.setValue(postDict["G"] as! Float, animated: true)
-            }
-            if Int(self.bSlider.value) != postDict["B"] as! Int{
-                self.bSlider.setValue(postDict["B"] as! Float, animated: true)
-            }
-            if Int(self.wSlider.value) != postDict["W"] as! Int{
-                self.wSlider.setValue(postDict["W"] as! Float, animated: true)
-            }
-            if Int(self.brightnessSlider.value) != postDict["brightness"] as! Int{
-                self.brightnessSlider.setValue(postDict["brightness"] as! Float, animated: true)
-            }
-            if Int(self.cycleSpeedSlider.value) != postDict["cycleSpeed"] as! Int{
-                self.cycleSpeedSlider.setValue(postDict["cycleSpeed"] as! Float, animated: true)
-            }
-            if self.fadeSlider.value != postDict["fade"] as! Float{
-                self.fadeSlider.setValue(postDict["fade"] as! Float, animated: true)
-            }
-            if self.cutoffSlider.value != postDict["cutoff"] as! Float{
-                self.cutoffSlider.setValue(postDict["cutoff"] as! Float, animated: true)
-            }
+            self.rSlider.setValue(Float(postDict["R"] as! Int), animated: true)
+            self.gSlider.setValue(Float(postDict["G"] as! Int), animated: true)
+            self.bSlider.setValue(Float(postDict["B"] as! Int), animated: true)
+            self.wSlider.setValue(Float(postDict["W"] as! Int), animated: true)
+            self.brightnessSlider.setValue(Float(postDict["brightness"] as! Int), animated: true)
+            self.cycleSpeedSlider.setValue(Float(postDict["cycleSpeed"] as! Int), animated: true)
+            self.fadeSlider.setValue(postDict["fade"] as! Float, animated: true)
+            self.cutoffSlider.setValue(postDict["cutoff"] as! Float, animated: true)
             self.dimCenterSwitch.setOn(postDict["dimcenter"] as! Int == 1, animated: true)
             self.brightEdgesSwitch.setOn(postDict["brightedges"] as! Int == 1, animated: true)
+            
+            self.colorDisplayView.backgroundColor = UIColor.init(colorLiteralRed: Float(postDict["R"] as! Int)/255, green: Float(postDict["G"] as! Int)/255, blue: Float(postDict["B"] as! Int)/255, alpha: 1)
+//            self.updateViews()
         })
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -127,7 +135,6 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
 
     
     @IBAction func sliderChanged(_ sender: UISlider) {
-        lockUI = true
         switch sender {
         case rSlider:
             ref.updateChildValues(["R": Int(sender.value)])
@@ -157,10 +164,16 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         }
     }
     
+
     
-    
-    @IBAction func changesEnded(_ sender: UISlider) {
-        lockUI = false
+    func HSBColorColorPickerTouched(sender:HSBColorPicker, color:UIColor, point:CGPoint, state:UIGestureRecognizerState){
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        color.getRed(&r, green: &g, blue: &b, alpha: &a)
+        ref.updateChildValues(["R": Int(r*255)])
+        ref.updateChildValues(["G": Int(g*255)])
+        ref.updateChildValues(["B": Int(b*255)])
+        ref.updateChildValues(["W": 0])
+        
     }
     
 }

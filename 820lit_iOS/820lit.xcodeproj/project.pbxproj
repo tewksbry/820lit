@@ -13,6 +13,7 @@
 		33469C121E3D808500E1E815 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33469C111E3D808500E1E815 /* Assets.xcassets */; };
 		33469C151E3D808500E1E815 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33469C131E3D808500E1E815 /* LaunchScreen.storyboard */; };
 		33469C1D1E3DA6B400E1E815 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 33469C1C1E3DA6B400E1E815 /* GoogleService-Info.plist */; };
+		33FE787E1E41463E00E9E6EE /* HSBColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FE787D1E41463E00E9E6EE /* HSBColorPicker.swift */; };
 		87C301EF34435B7F9F8A7AFF /* Pods_820lit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F69A1C98AD191F3F49176746 /* Pods_820lit.framework */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		33469C141E3D808500E1E815 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		33469C161E3D808500E1E815 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		33469C1C1E3DA6B400E1E815 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		33FE787D1E41463E00E9E6EE /* HSBColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSBColorPicker.swift; sourceTree = "<group>"; };
 		EBED131BB7034DEFEDDFC447 /* Pods-820lit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-820lit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-820lit/Pods-820lit.debug.xcconfig"; sourceTree = "<group>"; };
 		ED079DE0CD298C76EF4865EA /* Pods-820lit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-820lit.release.xcconfig"; path = "Pods/Target Support Files/Pods-820lit/Pods-820lit.release.xcconfig"; sourceTree = "<group>"; };
 		F69A1C98AD191F3F49176746 /* Pods_820lit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_820lit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -79,6 +81,7 @@
 				33469C131E3D808500E1E815 /* LaunchScreen.storyboard */,
 				33469C161E3D808500E1E815 /* Info.plist */,
 				33469C1C1E3DA6B400E1E815 /* GoogleService-Info.plist */,
+				33FE787D1E41463E00E9E6EE /* HSBColorPicker.swift */,
 			);
 			path = 820lit;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				33469C0D1E3D808500E1E815 /* ViewController.swift in Sources */,
+				33FE787E1E41463E00E9E6EE /* HSBColorPicker.swift in Sources */,
 				33469C0B1E3D808500E1E815 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
