@@ -73,6 +73,7 @@ class soundHandler(object):
         # if int(frame_count) % 2 == 0:
         #   url = "https://sound-visualizer-6443f.firebaseio.com/PatternID.json"
         #    unirest.get(url, callback=self.__update_curr_pattern)
+        print(audio_data)
         raw_val = max(audio_data) - 25
         if raw_val < 0:
             raw_val = 0
