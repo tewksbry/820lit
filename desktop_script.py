@@ -90,7 +90,7 @@ def main():
 
     def setParam(key, value):
         if key not in param_dict or param_dict[key] != value:
-            print("Updating parameters")
+            print("Updating parameter:", key, "from: ", param_dict[key], "to: ", value)
             passParam(ser, key, *value)
             param_dict[key] = value
             print("New parameters:", param_dict)
