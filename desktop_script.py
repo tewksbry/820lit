@@ -113,7 +113,7 @@ def main():
             elif key == '-d' or key == '--display':
                 setParam('d', [int(value[0])])
             elif key == '-l' or key == '--light':
-                setParam('l', map(int, value))
+                setParam('l', list(map(int, value)))
             elif key == '-b' or key == '--brightness':
                 setParam('b', [int(value[0])])
             elif key == '-s' or key == '--dimcenter':
@@ -154,9 +154,13 @@ def main():
             if inp == "-exit":
                 break
 
+    iteration = 0
+
     def new_pattern(volume, frequency, patt):
+        global iteration
+        iteration += 1
         print(" ")
-        print("loop start")
+        print("loop", iteration, "start")
         ser.readline()
         passParam(ser, 'v', volume)
         passParam(ser, 'f', normalize_frequency(frequency))
