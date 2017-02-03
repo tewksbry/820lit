@@ -45,8 +45,8 @@ class soundHandler(object):
     def __sigmoid(self, x):
         """Math function which maps values to set volume scale"""
 
-        volume = round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)))
-        if int(volume) == 2:
+        volume = round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)), 1)
+        if int(volume) <= 2:
             volume = 0
         return volume
 

@@ -267,9 +267,9 @@ COLOR getColor(int i, int len){
 void middleOutPattern(){
   uint8_t middle_pixel = NUM_PIXELS/2;
   uint8_t range_size = middle_pixel*cutoff;
-  uint8_t active_range = range_size*0.01*volume;
+  uint8_t active_range = range_size*volume/255.0;
   uint8_t spillover_start = 2 * range_size - middle_pixel;
-  uint8_t startwhite = 80;
+  uint8_t startwhite = 108;
 
   for (int i = active_range; i < middle_pixel; i++){
     COLOR c;
