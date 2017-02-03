@@ -95,6 +95,8 @@ def main():
             param_dict[key] = value
             print("New parameters:", param_dict)
 
+    my_stream = db.stream(request_callback)
+
     def checkForInput():
         while(not cmd_queue.empty()):
             args = cmd_queue.get()
@@ -120,6 +122,9 @@ def main():
             elif key == '-y' or key == '--cyclespeed':
                 setParam('y', [int(value[0])])
             elif key == '-exit':
+                print("Closing firebase stream...")
+                my_stream.close()
+                print("Firebase stream closed.")
                 print("Closing serial port...")
                 ser.close()
                 print("Serial port closed.")
@@ -140,17 +145,12 @@ def main():
                 print("Exit: -exit")
         cmd_dict.clear()
 
-    my_stream = db.stream(request_callback)
-
     def command(queue):
         while (True):
             inp = input()
             if len(inp) > 0:
                 queue.put(inp.split())
             if inp == "-exit":
-                print("Closing commandline stream...")
-                my_stream.close()
-                print("Commandline stream closed.")
                 break
 
     def new_pattern(volume, frequency, patt):
