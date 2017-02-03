@@ -154,13 +154,13 @@ def main():
             if inp == "-exit":
                 break
 
-    iteration = 0
+    # iteration = 0
 
     def new_pattern(volume, frequency, patt):
-        global iteration
-        iteration += 1
+        # global iteration
+        # iteration += 1
         print(" ")
-        print("loop", iteration, "start")
+        print("loop start")
         ser.readline()
         passParam(ser, 'v', volume)
         passParam(ser, 'f', normalize_frequency(frequency))
