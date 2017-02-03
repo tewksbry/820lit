@@ -154,19 +154,12 @@ def main():
             if inp == "-exit":
                 break
 
-    # iteration = 0
-
     def new_pattern(volume, frequency, patt):
-        # global iteration
-        # iteration += 1
-        print(" ")
-        print("loop start")
         ser.readline()
         passParam(ser, 'v', volume)
         passParam(ser, 'f', normalize_frequency(frequency))
         checkForInput()
         ser.reset_input_buffer()
-        print("loop finish")
         return volume
 
     commands = threading.Thread(target=command, args=(cmd_queue,))
