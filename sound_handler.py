@@ -30,7 +30,7 @@ class soundHandler(object):
         self.__CHUNK = chunk
         self.__max_output = 100
         self.__dependency = -0.00029
-        self.__scale_factor = 50
+        self.__scale_factor = 100
         self.stream = None
         self.__currPattern = 0
         self.__isActive = False
@@ -46,8 +46,8 @@ class soundHandler(object):
     def __sigmoid(self, x):
         """Math function which maps values to set volume scale"""
 
-        volume = round(x * 100 / 32742)
-        # volume = round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)), 1)
+        # volume = round(x * 100 / 32742)
+        volume = round(self.__max_output / (1 + self.__scale_factor * math.exp(self.__dependency * x)), 1)
         if int(volume) <= 2:
             volume = 0
         return volume
