@@ -33,24 +33,6 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     var patterns = ["Single Color", "Rainbow", "Random", "Random Bright", "Grayscale", "USC", "Mood Lighting"]
     var displayTypes = ["Fill", "Middle Out", "Middle Out Fill", "Strobe", "Cycle", "Middle Out White"]
     
-//    func updateViews() {
-//        if patternPicker.selectedRow(inComponent: 0) != 0{
-//            rSlider.alpha = 0
-//            gSlider.alpha = 0
-//            bSlider.alpha = 0
-//            wSlider.alpha = 0
-//            colorPicker.alpha = 0
-//            colorDisplayView.alpha = 0
-//        }else{
-//            rSlider.alpha = 1
-//            gSlider.alpha = 1
-//            bSlider.alpha = 1
-//            wSlider.alpha = 1
-//            colorPicker.alpha = 1
-//            colorDisplayView.alpha = 1
-//        }
-//        
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,8 +40,6 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         ref = FIRDatabase.database().reference()
         refHandle = ref.observe(FIRDataEventType.value, with: { (snapshot) in
             let postDict = snapshot.value as? [String : AnyObject] ?? [:]
-            print(postDict)
-//            if self.lockUI{ return}
             self.patternPicker.selectRow(postDict["PatternID"] as! Int, inComponent: 0, animated: true)
             self.displayPicker.selectRow(postDict["DisplayID"] as! Int, inComponent: 0, animated: true)
             self.onSwitch.setOn(postDict["on"] as! Int == 1, animated: true)
@@ -75,7 +55,6 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             self.brightEdgesSwitch.setOn(postDict["brightedges"] as! Int == 1, animated: true)
             
             self.colorDisplayView.backgroundColor = UIColor.init(colorLiteralRed: Float(postDict["R"] as! Int)/255, green: Float(postDict["G"] as! Int)/255, blue: Float(postDict["B"] as! Int)/255, alpha: 1)
-//            self.updateViews()
         })
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -137,27 +116,43 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     @IBAction func sliderChanged(_ sender: UISlider) {
         switch sender {
         case rSlider:
+            let step: Float = 1
+            sender.value = round(sender.value / step) * step
             ref.updateChildValues(["R": Int(sender.value)])
             break
         case gSlider:
+            let step: Float = 1
+            sender.value = round(sender.value / step) * step
             ref.updateChildValues(["G": Int(sender.value)])
             break
         case bSlider:
+            let step: Float = 1
+            sender.value = round(sender.value / step) * step
             ref.updateChildValues(["B": Int(sender.value)])
             break
         case wSlider:
+            let step: Float = 1
+            sender.value = round(sender.value / step) * step
             ref.updateChildValues(["W": Int(sender.value)])
             break
         case brightnessSlider:
+            let step: Float = 1
+            sender.value = round(sender.value / step) * step
             ref.updateChildValues(["brightness": Int(sender.value)])
             break
         case cycleSpeedSlider:
+            let step: Float = 1
+            sender.value = round(sender.value / step) * step
             ref.updateChildValues(["cycleSpeed": Int(sender.value)])
             break
         case fadeSlider:
+            let step: Float = 0.05
+            sender.value = round(sender.value / step) * step
             ref.updateChildValues(["fade": sender.value])
             break
         case cutoffSlider:
+            let step: Float = 0.05
+            sender.value = round(sender.value / step) * step
             ref.updateChildValues(["cutoff": sender.value])
             break
         default: break
