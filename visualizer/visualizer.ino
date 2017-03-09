@@ -47,6 +47,7 @@ typedef enum {
   Strobe,
   Cycle,
   MiddleOutWHITE,
+  Loading,
 } Display_type;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
@@ -60,8 +61,8 @@ float fade = 0.7;
 float cutoff = 1;
 bool bright_edges = true;
 bool dim_center = true;
-Palette_type palette = SingleLight;
-Display_type display_t = Fill;
+Palette_type palette = Rainbow;
+Display_type display_t = Loading;
 COLOR singleLight{255,255,255,255};
 int cycle_index = 0;
 int cycle_length = 5000;
@@ -331,6 +332,34 @@ void bounce(){
   
 }
 
+int loadingI = 0;
+int loadingPixNum = 1;
+
+void loading(){
+  int jumpAmount = 2;
+
+  for (int i = 0; i < NUM_PIXELS; i++){
+      if (i < loadingPixNum*2){
+        if (i%2 == 0){
+          strip.setPixelColor((loadingI+i) % NUM_PIXELS, colorAsInt(getColor(loadingPixNum, NUM_PIXELS/2)));
+        }else{
+          strip.setPixelColor((loadingI+i) % NUM_PIXELS, colorAsInt({0,0,0,0}));
+        }
+      }else{
+        strip.setPixelColor((loadingI+i) % NUM_PIXELS, colorAsInt({0,0,0,0}));
+      }
+  }
+  
+  loadingI += 3;
+  if (loadingPixNum*2 > NUM_PIXELS){
+    loadingPixNum = 1;
+  }
+  if (loadingI >= NUM_PIXELS){
+    loadingI = 0;
+    loadingPixNum+=jumpAmount;
+  }
+}
+
 void displayPattern(){
   switch (display_t){
     case Fill:
@@ -352,6 +381,9 @@ void displayPattern(){
       if (cycle_index >= cycle_length){
         cycle_index = 0;
       }
+      break;
+     case Loading:
+      loading();
       break;
   }
 }
