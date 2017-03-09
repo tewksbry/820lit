@@ -120,9 +120,9 @@ class soundHandler(object):
                 device_index = x
                 break
 
-        for x in range(p.get_device_count()):
-            if p.get_device_info_by_index(x)["name"] == u'Soundflower (2ch)':
-                device_index = x
+        # for x in range(p.get_device_count()):
+        #     if p.get_device_info_by_index(x)["name"] == u'Soundflower (2ch)':
+        #         device_index = x
 
         self.stream = p.open(format=pyaudio.paInt16,
                              channels=self.__CHANNELS,
