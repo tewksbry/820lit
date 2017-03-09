@@ -72,19 +72,15 @@ class soundHandler(object):
         """Private function used to interface with pyAudio"""
         audio_data = np.fromstring(in_data, dtype=np.int16)
 
-        print("")
-        raw_val = max(audio_data) - 25
-        print("Max volume: ", raw_val)
+        # raw_val = max(audio_data) - 25
 
         raw_val = audioop.rms(in_data, 2)
-        print("RMS volume: ", raw_val)
         if raw_val < 0:
             raw_val = 0
 
         # do processing here
         # print("\nVolume raw input: " + str(raw_val))
         last_volume = self.__sigmoid(raw_val)
-        print("Volume input: " + str(last_volume))
 
         # Do the calculations
         fftData = abs(np.fft.rfft(audio_data)) ** 2
