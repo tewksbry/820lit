@@ -244,7 +244,7 @@ COLOR getColor(int i, int len){
       c = rainbowPalette(i, len);
       break;
     case Random:
-      c = COLOR{(uint8_t)random(0, 256), (uint8_t)random(0, 256), (uint8_t)random(0, 256), 0};
+      c = rainbowPalette(random(0, 768), 768);
       break;
     case Random_bright:
       c = COLOR{(uint8_t)random(0, 256), (uint8_t)random(0, 256), (uint8_t)random(0, 256), (uint8_t)random(0, 256)};
