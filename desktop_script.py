@@ -156,6 +156,8 @@ def main():
 
     def new_pattern(volume, frequency, patt):
         ser.readline()
+        print("volume " + volume)
+        print("frequency " + frequency)
         passParam(ser, 'v', int(volume * 255 / 100))
         passParam(ser, 'f', normalize_frequency(frequency))
         checkForInput()

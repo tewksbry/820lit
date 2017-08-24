@@ -59,6 +59,8 @@ uint8_t frequency = 0;
 uint8_t prev_frequency = 0;
 float fade = 0.7;
 float cutoff = 1;
+uint8_t repeat = 1;
+
 bool bright_edges = true;
 bool dim_center = true;
 Palette_type palette = Rainbow;
@@ -266,10 +268,10 @@ COLOR getColor(int i, int len){
 // PATTERN DISPLAYS
 
 void middleOutPattern(){
-  uint8_t middle_pixel = NUM_PIXELS/2;
-  uint8_t range_size = middle_pixel*cutoff;
-  uint8_t active_range = range_size*volume/255.0;
-  uint8_t spillover_start = 2 * range_size - middle_pixel;
+  uint16_t middle_pixel = NUM_PIXELS/2;
+  uint16_t range_size = middle_pixel*cutoff;
+  uint16_t active_range = range_size*volume/255.0;
+  uint16_t spillover_start = 2 * range_size - middle_pixel;
   uint8_t startwhite = 108;
 
   for (int i = active_range; i < middle_pixel; i++){
