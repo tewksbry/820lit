@@ -5,3 +5,4 @@ env
 .idea
 website/node_modules
 website/.sass-cache
+node_modules
