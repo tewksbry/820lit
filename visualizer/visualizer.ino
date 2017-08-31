@@ -1,7 +1,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #define PIN 6
-#define NUM_PIXELS 300
+#define NUM_PIXELS 600
 
 enum Params {
   Volume = 'v',

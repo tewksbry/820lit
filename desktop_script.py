@@ -32,10 +32,15 @@ def passParam(ser, name, *argv):
 def main():
 
     port = '/dev/tty.usbmodem1461'
+    port2 = '/dev/tty.usbmodem1462'
     if len(sys.argv) >= 2:
         port = sys.argv[1]
+    if len(sys.argv) >= 3:
+        port2 = sys.argv[2]
     ser = None
     ser = serial.Serial(port, 115200)
+    ser2 = None
+    ser2 = serial.Serial(port2, 115200)
     handler = soundHandler()
     cmd_queue = queue.Queue()
     cmd_dict = {}
@@ -93,6 +98,7 @@ def main():
             if key in param_dict:
                 print("Updating parameter:", key, "from: ", param_dict[key], "to: ", value)
             passParam(ser, key, *value)
+            passParam(ser2, key, *value)
             param_dict[key] = value
             print("New parameters:", param_dict)
 
@@ -128,6 +134,7 @@ def main():
                 print("Firebase stream closed.")
                 print("Closing serial port...")
                 ser.close()
+                ser2.close()
                 print("Serial port closed.")
                 print("Exiting script.")
                 sys.exit(0)
@@ -156,12 +163,16 @@ def main():
 
     def new_pattern(volume, frequency, patt):
         ser.readline()
+        ser2.readline()
         print("volume " + str(volume))
         print("frequency " + str(frequency))
         passParam(ser, 'v', int(volume * 255 / 100))
         passParam(ser, 'f', normalize_frequency(frequency))
+        passParam(ser2, 'v', int(volume * 255 / 100))
+        passParam(ser2, 'f', normalize_frequency(frequency))
         checkForInput()
         ser.reset_input_buffer()
+        ser2.reset_input_buffer()
         return volume
 
     commands = threading.Thread(target=command, args=(cmd_queue,))
