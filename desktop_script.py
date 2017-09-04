@@ -162,8 +162,8 @@ def main():
                 break
 
     def new_pattern(volume, frequency, patt):
-        print("volume " + str(volume))
-        print("frequency " + str(frequency))
+        # print("volume " + str(volume))
+        # print("frequency " + str(frequency))
         ser.readline()
         passParam(ser, 'v', int(volume * 255 / 100))
         passParam(ser, 'f', normalize_frequency(frequency))
